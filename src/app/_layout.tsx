@@ -1,5 +1,7 @@
 import { Stack } from "expo-router";
 import { useFonts } from "expo-font";
+import React from "react";
+import { SplashScreen } from "expo-router";
 
 export default function RootLayout() {
   const [loaded] = useFonts({
@@ -8,13 +10,17 @@ export default function RootLayout() {
   });
 
   if (!loaded) {
+    SplashScreen.preventAutoHideAsync();
     return null;
   }
   return (
     <Stack
       screenOptions={{
         headerShown: false,
-        contentStyle: { padding: 20, backgroundColor: "#F9F6F6" },
+        contentStyle: {
+          padding: 20,
+          backgroundColor: "#F9F6F6",
+        },
       }}
     >
       <Stack.Screen name="index" options={{ title: "Home" }} />

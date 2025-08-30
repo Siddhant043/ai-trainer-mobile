@@ -1,10 +1,11 @@
-import { View, Text, StyleSheet, Image, TextInput } from "react-native";
+import { View, StyleSheet, Image } from "react-native";
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import CustomTextInput from "@/src/components/CustomTextInput";
 import Button from "@/src/components/Button";
 import GoogleSignInButton from "@/src/components/GoogleSignUpButton";
 import AppleSignInButton from "@/src/components/AppleSignUpButton";
+import CustomText from "@/src/components/CustomText";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -15,7 +16,7 @@ const Login = () => {
           source={require("../../../assets/images/logo.png")}
           style={styles.logo}
         />
-        <Text style={styles.title}>Log in or Sign up</Text>
+        <CustomText style={styles.title}>Log in or Sign up</CustomText>
       </View>
       <View style={styles.inputContainer}>
         <CustomTextInput
@@ -26,7 +27,7 @@ const Login = () => {
           handleValueChange={setEmail}
         />
         <Button onPress={() => {}}>Submit</Button>
-        <Text style={styles.text}>or</Text>
+        <CustomText style={styles.text}>or</CustomText>
         <GoogleSignInButton />
         <AppleSignInButton />
       </View>
@@ -41,7 +42,6 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 32,
-    fontWeight: "regular",
   },
   logo: {
     width: 100,
@@ -62,7 +62,6 @@ const styles = StyleSheet.create({
   text: {
     textAlign: "center",
     fontSize: 16,
-    fontWeight: "regular",
   },
 });
 

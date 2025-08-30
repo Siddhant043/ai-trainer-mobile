@@ -1,5 +1,6 @@
 import { Text, StyleSheet, Pressable } from "react-native";
 import React from "react";
+import CustomText from "./CustomText";
 
 const Button = ({
   onPress,
@@ -16,7 +17,7 @@ const Button = ({
         pressed && styles.buttonPressed, // apply on press
       ]}
     >
-      <Text style={styles.buttonText}>{children}</Text>
+      <CustomText style={styles.buttonText}>{children}</CustomText>
     </Pressable>
   );
 };
@@ -26,7 +27,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#000",
     padding: 10,
     borderRadius: 8,
-    height: 46,
+    height: 56,
     alignItems: "center",
     justifyContent: "center",
     width: "100%",
@@ -37,6 +38,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "#fff",
     textAlign: "center",
+    fontFamily: "OutfitSemiBold",
     fontSize: 16,
     fontWeight: "bold",
   },

@@ -1,8 +1,9 @@
-import { View, Text, StyleSheet, Image } from "react-native";
+import { View, StyleSheet, Image } from "react-native";
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import CustomTextInput from "@/src/components/CustomTextInput";
 import Button from "@/src/components/Button";
+import CustomText from "@/src/components/CustomText";
 
 const VerifyOTP = () => {
   const [otp, setOtp] = useState("");
@@ -13,10 +14,10 @@ const VerifyOTP = () => {
           source={require("../../../assets/images/logo.png")}
           style={styles.logo}
         />
-        <Text style={styles.title}>Verify your Account</Text>
-        <Text style={styles.description}>
+        <CustomText style={styles.title}>Verify your Account</CustomText>
+        <CustomText style={styles.description}>
           We have sent you a code to verify your account
-        </Text>
+        </CustomText>
       </View>
       <View style={styles.inputContainer}>
         <CustomTextInput
@@ -28,8 +29,8 @@ const VerifyOTP = () => {
         />
         <Button onPress={() => {}}>Submit</Button>
         <View style={styles.textContainer}>
-          <Text style={styles.text}>Didn't receive the code?</Text>
-          <Text style={styles.text}>Resend code</Text>
+          <CustomText style={styles.text}>Didn't receive the code?</CustomText>
+          <CustomText style={styles.text}>Resend code</CustomText>
         </View>
       </View>
     </SafeAreaView>
@@ -43,7 +44,6 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 32,
-    fontWeight: "regular",
   },
   logo: {
     width: 100,
@@ -59,7 +59,6 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: 16,
-    fontWeight: "regular",
     color: "#707070",
   },
   inputContainer: {
@@ -74,7 +73,6 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 16,
-    fontWeight: "regular",
     color: "#707070",
   },
 });

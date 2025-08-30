@@ -1,14 +1,15 @@
 import { RelativePathString, useRouter } from "expo-router";
-import { Text, View } from "react-native";
+import { View } from "react-native";
 import { useUserStore } from "../store";
 import { useEffect } from "react";
+import CustomText from "../components/CustomText";
 
 export default function Index() {
   const router = useRouter();
   const { getIsAuthenticated } = useUserStore();
   useEffect(() => {
     if (!getIsAuthenticated()) {
-      router.navigate("/verify-otp" as RelativePathString);
+      router.navigate("/onboarding" as RelativePathString);
     }
   }, []);
   return (
@@ -19,7 +20,7 @@ export default function Index() {
         alignItems: "center",
       }}
     >
-      <Text>Loading...</Text>
+      <CustomText>Loading...</CustomText>
     </View>
   );
 }
