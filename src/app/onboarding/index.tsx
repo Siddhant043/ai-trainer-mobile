@@ -7,6 +7,8 @@ import StepOne from "@/src/components/OnboardingSteps/StepOne";
 import StepTwo from "@/src/components/OnboardingSteps/StepTwo";
 import StepThree from "@/src/components/OnboardingSteps/StepThree";
 import StepFour from "@/src/components/OnboardingSteps/StepFour";
+import StepFive from "@/src/components/OnboardingSteps/StepFive";
+import StepSix from "@/src/components/OnboardingSteps/StepSix";
 
 const Onboarding = () => {
   const [step, setStep] = useState(1);
@@ -14,15 +16,19 @@ const Onboarding = () => {
   const stepMapping = (step: number) => {
     switch (step) {
       case 1:
-        return <StepOne setStep={setStep} />;
+        return <StepOne setNext={setStep} />;
       case 2:
-        return <StepTwo setStep={setStep} />;
+        return <StepTwo setNext={setStep} />;
       case 3:
-        return <StepThree setStep={setStep} />;
+        return <StepThree setNext={setStep} />;
       case 4:
-        return <StepFour setStep={setStep} />;
+        return <StepFour setNext={setStep} />;
+      case 5:
+        return <StepFive setNext={setStep} />;
+      case 6:
+        return <StepSix setNext={setStep} />;
       default:
-        return <StepOne setStep={setStep} />;
+        return <StepOne setNext={setStep} />;
     }
   };
 

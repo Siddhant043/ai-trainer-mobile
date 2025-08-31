@@ -6,7 +6,7 @@ import CustomText from "../CustomText";
 import SingleSelectRadio from "../SingleSelectRadio";
 import Button from "../Button";
 
-const StepOne = ({ setStep }: { setStep: (step: number) => void }) => {
+const StepOne = ({ setNext }: { setNext: (step: number) => void }) => {
   const [fullName, setFullName] = useState("");
   const [date, setDate] = useState(new Date());
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -68,8 +68,8 @@ const StepOne = ({ setStep }: { setStep: (step: number) => void }) => {
           value={weight}
           handleValueChange={setWeight}
         />
-        <Button onPress={() => setStep(2)}>Next</Button>
       </ScrollView>
+      <Button onPress={() => setNext(2)}>Next</Button>
     </View>
   );
 };

@@ -6,7 +6,7 @@ import CustomText from "../CustomText";
 import Button from "../Button";
 import SingleSelectOption from "../SingleSelectOption";
 
-const StepThree = ({ setStep }: { setStep: (step: number) => void }) => {
+const StepThree = ({ setNext }: { setNext: (step: number) => void }) => {
   const [fitnessGoal, setFitnessGoal] = useState("");
   const fitnessGoalMap = [
     {
@@ -40,7 +40,7 @@ const StepThree = ({ setStep }: { setStep: (step: number) => void }) => {
           selectedValue={fitnessGoal}
           onValueChange={setFitnessGoal}
         />
-        <Button onPress={() => setStep(4)}>Next</Button>
+        <Button onPress={() => setNext(4)}>Next</Button>
       </ScrollView>
     </View>
   );
