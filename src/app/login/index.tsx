@@ -6,7 +6,7 @@ import Button from "@/src/components/Button";
 import GoogleSignInButton from "@/src/components/GoogleSignUpButton";
 import AppleSignInButton from "@/src/components/AppleSignUpButton";
 import CustomText from "@/src/components/CustomText";
-import { useLogin } from "@/src/hooks/useAuth";
+import { useLogin } from "@/src/hooks";
 import { EMAIL_REGEX_STRICT } from "@/src/constants";
 import { RelativePathString, useRouter } from "expo-router";
 
