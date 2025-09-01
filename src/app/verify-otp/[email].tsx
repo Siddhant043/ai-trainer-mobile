@@ -4,9 +4,46 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import CustomTextInput from "@/src/components/CustomTextInput";
 import Button from "@/src/components/Button";
 import CustomText from "@/src/components/CustomText";
+import {
+  useLocalSearchParams,
+  useRouter,
+  RelativePathString,
+} from "expo-router";
+import { useVerifyOtp } from "@/src/hooks";
 
 const VerifyOTP = () => {
+  const { email } = useLocalSearchParams<{ email: string }>();
+  const router = useRouter();
   const [otp, setOtp] = useState("");
+  const [otpError, setOtpError] = useState(false);
+  const [otpErrorMessage, setOtpErrorMessage] = useState("");
+  const [otpLoading, setOtpLoading] = useState(false);
+  const { verifyOtp, isPending, error } = useVerifyOtp();
+
+  const handleVerifyOtp = async () => {
+    if (!otp || otp.length !== 6) {
+      setOtpError(true);
+      setOtpErrorMessage("Please enter a valid OTP");
+      return;
+    }
+    setOtpError(false);
+    setOtpErrorMessage("");
+    await verifyOtp({ email, otp });
+    if (isPending) {
+      setOtpLoading(true);
+      return;
+    }
+    if (error) {
+      setOtpError(true);
+      setOtpErrorMessage("Something went wrong");
+      return;
+    }
+    setOtpLoading(false);
+    setOtpError(false);
+    setOtpErrorMessage("");
+    setOtp("");
+    router.push("/onboarding" as RelativePathString);
+  };
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.titleContainer}>
@@ -25,9 +62,20 @@ const VerifyOTP = () => {
           type="numeric"
           placeholder="123456"
           value={otp}
-          handleValueChange={setOtp}
+          handleValueChange={(value) => {
+            if (value.length > 6) return;
+            setOtp(value);
+          }}
         />
-        <Button onPress={() => {}}>Submit</Button>
+        {otpError && (
+          <CustomText style={styles.error}>{otpErrorMessage}</CustomText>
+        )}
+        <Button
+          onPress={handleVerifyOtp}
+          disabled={otp.length !== 6 || otpLoading}
+        >
+          Submit
+        </Button>
         <View style={styles.textContainer}>
           <CustomText style={styles.text}>Didn't receive the code?</CustomText>
           <CustomText style={styles.text}>Resend code</CustomText>
@@ -74,6 +122,10 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 16,
     color: "#707070",
+  },
+  error: {
+    color: "red",
+    fontSize: 12,
   },
 });
 

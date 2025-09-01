@@ -34,7 +34,7 @@ const Login = () => {
       setErrorMessage("Something went wrong");
       return;
     }
-    router.navigate("/verify-otp" as RelativePathString);
+    router.push(`/verify-otp/${email}` as RelativePathString);
   };
   return (
     <SafeAreaView style={styles.container}>
