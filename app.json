@@ -17,6 +17,11 @@
       "edgeToEdgeEnabled": true,
       "package": "com.ai-trainer.mobile"
     },
+    "ios": {
+      "config": {
+        "usesNonExemptEncryption": false
+      }
+    },
     "web": {
       "bundler": "metro",
       "output": "static",
@@ -28,6 +33,7 @@
         {
           "fonts": [
             "./assets/fonts/Outfit-Regular.ttf",
+            "./assets/fonts/Outfit-SemiBold.ttf",
             "./assets/fonts/Outfit-Bold.ttf"
           ],
           "android": {
@@ -40,6 +46,10 @@
                     "weight": 700
                   },
                   {
+                    "path": "./assets/fonts/Outfit-SemiBold.ttf",
+                    "weight": 600
+                  },
+                  {
                     "path": "./assets/fonts/Outfit-Regular.ttf",
                     "weight": 400
                   }
@@ -50,6 +60,7 @@
           "ios": {
             "fonts": [
               "./assets/fonts/Outfit-Bold.ttf",
+              "./assets/fonts/Outfit-SemiBold.ttf",
               "./assets/fonts/Outfit-Regular.ttf"
             ]
           }
@@ -63,6 +74,13 @@
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#000"
+        }
+      ],
+      [
+        "expo-secure-store",
+        {
+          "configureAndroidBackup": true,
+          "faceIDPermission": "Allow AI Trainer to access your Face ID biometric data."
         }
       ]
     ],

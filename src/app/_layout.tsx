@@ -16,6 +16,7 @@ export default function RootLayout() {
   const queryClient = new QueryClient();
   const [loaded] = useFonts({
     OutfitRegular: require("../../assets/fonts/Outfit-Regular.ttf"),
+    OutfitSemiBold: require("../../assets/fonts/Outfit-SemiBold.ttf"),
     OutfitBold: require("../../assets/fonts/Outfit-Bold.ttf"),
   });
 
@@ -38,6 +39,7 @@ export default function RootLayout() {
         <Stack.Screen name="login" options={{ title: "Login" }} />
         <Stack.Screen name="verify-otp" options={{ title: "Verify OTP" }} />
         <Stack.Screen name="onboarding" options={{ title: "Onboarding" }} />
+        <Stack.Screen name="home" options={{ title: "Home" }} />
       </Stack>
     </QueryClientProvider>
   );

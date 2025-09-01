@@ -1,17 +1,10 @@
-import { RelativePathString, useRouter } from "expo-router";
 import { View } from "react-native";
-import { useUserStore } from "../store";
-import { useEffect } from "react";
 import CustomText from "../components/CustomText";
+import { useCheckUserLoggedIn } from "../hooks/useAuth";
 
 export default function Index() {
-  const router = useRouter();
-  const { getIsAuthenticated } = useUserStore();
-  useEffect(() => {
-    if (!getIsAuthenticated()) {
-      router.navigate("/login" as RelativePathString);
-    }
-  }, []);
+  const { isLoading } = useCheckUserLoggedIn();
+
   return (
     <View
       style={{
@@ -20,7 +13,9 @@ export default function Index() {
         alignItems: "center",
       }}
     >
-      <CustomText>Loading...</CustomText>
+      <CustomText>
+        {isLoading ? "Loading..." : "Checking authentication..."}
+      </CustomText>
     </View>
   );
 }

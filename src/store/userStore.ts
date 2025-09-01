@@ -2,16 +2,20 @@ import { create } from "zustand";
 import { User } from "../types";
 
 interface UserStore {
-  user: User | null;
+  user: User;
   isAuthenticated: boolean;
   setIsAuthenticated: (isAuthenticated: boolean) => void;
   getIsAuthenticated: () => boolean;
-  setUser: (user: User | null) => void;
-  getUser: () => User | null;
+  setUser: (user: User) => void;
+  getUser: () => User;
 }
 
 const useUserStore = create<UserStore>((set, get) => ({
-  user: null,
+  user: {
+    _id: "",
+    name: "",
+    email: "",
+  },
   isAuthenticated: false,
   setUser: (user) => set({ user }),
   getIsAuthenticated: () => get().isAuthenticated,

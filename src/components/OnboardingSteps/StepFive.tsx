@@ -10,7 +10,7 @@ import { useUserStore } from "@/src/store";
 const StepFive = ({ setNext }: { setNext: (step: number) => void }) => {
   const { user, setUser } = useUserStore();
   const [selectedEquipments, setSelectedEquipments] = useState<string[]>(
-    user?.equipments || []
+    user?.equipments?.length ? user?.equipments : ["dumbbell", "barbell"]
   );
 
   const checkIsSelected = (value: string) => {
@@ -28,11 +28,10 @@ const StepFive = ({ setNext }: { setNext: (step: number) => void }) => {
   };
 
   const handleNext = () => {
-    if (!user?.id || !user?.email) {
+    if (!user._id || !user.email) {
       // Handle case where required fields are missing
       return;
     }
-
     setUser({
       ...user,
       equipments: selectedEquipments,
@@ -61,7 +60,7 @@ const StepFive = ({ setNext }: { setNext: (step: number) => void }) => {
             />
           )}
         />
-        <Button onPress={() => setNext(6)}>Next</Button>
+        <Button onPress={handleNext}>Next</Button>
       </View>
     </View>
   );

@@ -10,7 +10,7 @@ import {
 } from ".";
 
 interface User {
-  id: string;
+  _id: string;
   name: string;
   email: string;
   avatar?: string;
@@ -33,6 +33,7 @@ interface User {
     timeAvailable?: TIME_AVAILABLE;
     workoutLocation?: WORKOUT_LOCATION;
   };
+  isOnboarded?: boolean;
   updatedAt?: string;
   timezone?: string;
   language?: string;

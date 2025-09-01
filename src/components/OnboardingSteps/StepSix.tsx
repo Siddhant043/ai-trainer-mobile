@@ -1,22 +1,17 @@
-import { View, StyleSheet, ScrollView } from "react-native";
-import { Picker } from "@react-native-picker/picker";
+import { View, StyleSheet } from "react-native";
 import React, { useState } from "react";
-
 import CustomText from "../CustomText";
-
 import Button from "../Button";
 import CustomPicker from "../CustomPicker";
-import {
-  DIETARY_RESTRICTIONS,
-  FASTING_PREFERENCE,
-  STATE,
-  User,
-} from "@/src/types";
+import { DIETARY_RESTRICTIONS, FASTING_PREFERENCE, STATE } from "@/src/types";
 import { STATES_MAP } from "@/src/constants";
 import { useUserStore } from "@/src/store";
+import { useUpdateUser } from "@/src/hooks";
 
 const StepSix = ({ setNext }: { setNext: (step: number) => void }) => {
   const { user, setUser } = useUserStore();
+
+  const { updateUserMutation } = useUpdateUser();
   const [dietaryRestrictions, setDietaryRestrictions] =
     useState<DIETARY_RESTRICTIONS>(
       user?.dietaryPreferences?.dietaryRestrictions || "vegetarian"
@@ -95,17 +90,13 @@ const StepSix = ({ setNext }: { setNext: (step: number) => void }) => {
     setFastingPractices(value as FASTING_PREFERENCE);
   };
 
-  const submitUser = async (user: User) => {
-    // await submituser(user)
-    console.log(user.name);
-  };
-
   const handleNext = async () => {
-    if (!user?.id || !user?.email) {
+    if (!user._id || !user.email) {
       // Handle case where required fields are missing
       return;
     }
-    setUser({
+
+    const updatedUser = {
       ...user,
       dietaryPreferences: {
         ...user?.dietaryPreferences,
@@ -113,8 +104,16 @@ const StepSix = ({ setNext }: { setNext: (step: number) => void }) => {
         state: state as STATE,
         fastingPreference: fastingPractices as FASTING_PREFERENCE,
       },
-    });
-    await submitUser(user);
+      isOnboarded: true,
+    };
+
+    try {
+      await updateUserMutation.mutateAsync(updatedUser);
+      setUser(updatedUser);
+      setNext(7); // Move to next step or complete onboarding
+    } catch (error) {
+      console.error("Failed to update user:", error);
+    }
   };
 
   return (

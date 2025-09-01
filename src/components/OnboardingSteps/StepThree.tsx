@@ -10,7 +10,7 @@ import { useUserStore } from "@/src/store";
 const StepThree = ({ setNext }: { setNext: (step: number) => void }) => {
   const { user, setUser } = useUserStore();
   const [experienceLevel, setExperienceLevel] = useState(
-    user?.exercisePreferences?.experienceLevel || ""
+    user?.exercisePreferences?.experienceLevel || "beginner"
   );
   const experienceLevelMap = [
     {
@@ -28,8 +28,11 @@ const StepThree = ({ setNext }: { setNext: (step: number) => void }) => {
   ];
 
   const handleNext = () => {
-    if (!user?.id || !user?.email) {
+    if (!user._id || !user.email) {
       // Handle case where required fields are missing
+      return;
+    }
+    if (!experienceLevel) {
       return;
     }
     setUser({

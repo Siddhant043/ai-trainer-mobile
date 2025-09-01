@@ -9,12 +9,9 @@ import StepThree from "@/src/components/OnboardingSteps/StepThree";
 import StepFour from "@/src/components/OnboardingSteps/StepFour";
 import StepFive from "@/src/components/OnboardingSteps/StepFive";
 import StepSix from "@/src/components/OnboardingSteps/StepSix";
-import { useUserStore } from "@/src/store";
 
 const Onboarding = () => {
   const [step, setStep] = useState(1);
-  const { user } = useUserStore();
-  console.log(user);
 
   const stepMapping = (step: number) => {
     switch (step) {

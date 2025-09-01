@@ -34,7 +34,7 @@ const StepTwo = ({ setNext }: { setNext: (step: number) => void }) => {
   ];
 
   const handleNext = () => {
-    if (!user?.id || !user?.email) {
+    if (!user._id || !user.email) {
       // Handle case where required fields are missing
       return;
     }

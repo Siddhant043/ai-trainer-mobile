@@ -8,7 +8,8 @@ import Button from "../Button";
 import { useUserStore } from "@/src/store";
 
 const StepOne = ({ setNext }: { setNext: (step: number) => void }) => {
-  const { user, setUser } = useUserStore();
+  const { getUser, setUser } = useUserStore();
+  const user = getUser();
   const [fullName, setFullName] = useState(user?.name || "");
   const [date, setDate] = useState(new Date());
   const [phoneNumber, setPhoneNumber] = useState(user?.phoneNumber || "");
@@ -21,8 +22,8 @@ const StepOne = ({ setNext }: { setNext: (step: number) => void }) => {
   );
 
   const handleNext = () => {
-    if (!user?.id || !user?.email) {
-      // Handle case where required fields are missing
+    if (!user._id || !user.email) {
+      console.log("User not logged in");
       return;
     }
 
