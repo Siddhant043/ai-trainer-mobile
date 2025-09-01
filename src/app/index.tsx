@@ -9,7 +9,7 @@ export default function Index() {
   const { getIsAuthenticated } = useUserStore();
   useEffect(() => {
     if (!getIsAuthenticated()) {
-      router.navigate("/onboarding" as RelativePathString);
+      router.navigate("/login" as RelativePathString);
     }
   }, []);
   return (

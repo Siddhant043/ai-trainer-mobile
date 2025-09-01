@@ -6,9 +6,36 @@ import Button from "@/src/components/Button";
 import GoogleSignInButton from "@/src/components/GoogleSignUpButton";
 import AppleSignInButton from "@/src/components/AppleSignUpButton";
 import CustomText from "@/src/components/CustomText";
+import { useLogin } from "@/src/hooks/useAuth";
+import { EMAIL_REGEX_STRICT } from "@/src/constants";
+import { RelativePathString, useRouter } from "expo-router";
 
 const Login = () => {
   const [email, setEmail] = useState("");
+  const [emailError, setEmailError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const { login, isPending, error } = useLogin();
+  const router = useRouter();
+
+  const isValidEmail = (email: string): boolean => {
+    return EMAIL_REGEX_STRICT.test(email);
+  };
+
+  const handleLogin = async () => {
+    if (!email || !isValidEmail(email)) {
+      setEmailError(true);
+      setErrorMessage("Please enter a valid email");
+      return;
+    }
+    setEmailError(false);
+    await login(email);
+    if (error) {
+      setEmailError(true);
+      setErrorMessage("Something went wrong");
+      return;
+    }
+    router.navigate("/verify-otp" as RelativePathString);
+  };
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.titleContainer}>
@@ -26,7 +53,12 @@ const Login = () => {
           value={email}
           handleValueChange={setEmail}
         />
-        <Button onPress={() => {}}>Submit</Button>
+        {emailError && (
+          <CustomText style={styles.error}>{errorMessage}</CustomText>
+        )}
+        <Button onPress={handleLogin} disabled={isPending}>
+          {isPending ? "Loading..." : "Submit"}
+        </Button>
         <CustomText style={styles.text}>or</CustomText>
         <GoogleSignInButton />
         <AppleSignInButton />
@@ -62,6 +94,10 @@ const styles = StyleSheet.create({
   text: {
     textAlign: "center",
     fontSize: 16,
+  },
+  error: {
+    color: "red",
+    fontSize: 12,
   },
 });
 

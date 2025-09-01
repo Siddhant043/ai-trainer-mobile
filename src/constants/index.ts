@@ -198,3 +198,5 @@ export const STATES_MAP: { value: STATE; label: string }[] = [
   { value: "uttarakhand", label: "Uttarakhand" },
   { value: "west-bengal", label: "West Bengal" },
 ];
+
+export const EMAIL_REGEX_STRICT = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;

@@ -5,16 +5,20 @@ import CustomText from "./CustomText";
 const Button = ({
   onPress,
   children,
+  disabled,
 }: {
   onPress: () => void;
   children: React.ReactNode;
+  disabled?: boolean;
 }) => {
   return (
     <Pressable
       onPress={onPress}
+      disabled={disabled}
       style={({ pressed }) => [
         styles.button,
         pressed && styles.buttonPressed, // apply on press
+        disabled && styles.buttonDisabled,
       ]}
     >
       <CustomText style={styles.buttonText}>{children}</CustomText>
@@ -40,6 +44,9 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontFamily: "OutfitBold",
     fontSize: 16,
+  },
+  buttonDisabled: {
+    backgroundColor: "#2B2B2B",
   },
 });
 
