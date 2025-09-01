@@ -5,9 +5,15 @@ import CustomText from "../CustomText";
 
 import Button from "../Button";
 import SingleSelectOption from "../SingleSelectOption";
+import { useUserStore } from "@/src/store";
+import { FITNESS_GOAL } from "@/src/types";
 
 const StepTwo = ({ setNext }: { setNext: (step: number) => void }) => {
-  const [fitnessGoal, setFitnessGoal] = useState("");
+  const { user, setUser } = useUserStore();
+  const [fitnessGoal, setFitnessGoal] = useState(
+    user?.exercisePreferences?.fitnessGoal || ""
+  );
+
   const fitnessGoalMap = [
     {
       label: "🏃 Fat Loss",
@@ -26,6 +32,23 @@ const StepTwo = ({ setNext }: { setNext: (step: number) => void }) => {
       value: "recomposition",
     },
   ];
+
+  const handleNext = () => {
+    if (!user?.id || !user?.email) {
+      // Handle case where required fields are missing
+      return;
+    }
+
+    setUser({
+      ...user,
+      exercisePreferences: {
+        ...user?.exercisePreferences,
+        fitnessGoal: fitnessGoal as FITNESS_GOAL,
+      },
+    });
+    setNext(3);
+  };
+
   return (
     <View style={styles.container}>
       <CustomText style={styles.title}>Fitness Goal</CustomText>
@@ -38,7 +61,7 @@ const StepTwo = ({ setNext }: { setNext: (step: number) => void }) => {
           selectedValue={fitnessGoal}
           onValueChange={setFitnessGoal}
         />
-        <Button onPress={() => setNext(3)}>Next</Button>
+        <Button onPress={handleNext}>Next</Button>
       </ScrollView>
     </View>
   );

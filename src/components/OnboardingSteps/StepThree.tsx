@@ -5,10 +5,14 @@ import CustomText from "../CustomText";
 
 import Button from "../Button";
 import SingleSelectOption from "../SingleSelectOption";
+import { useUserStore } from "@/src/store";
 
 const StepThree = ({ setNext }: { setNext: (step: number) => void }) => {
-  const [fitnessGoal, setFitnessGoal] = useState("");
-  const fitnessGoalMap = [
+  const { user, setUser } = useUserStore();
+  const [experienceLevel, setExperienceLevel] = useState(
+    user?.exercisePreferences?.experienceLevel || ""
+  );
+  const experienceLevelMap = [
     {
       label: "🏋️ Beginner (0–12 months)",
       value: "beginner",
@@ -22,6 +26,21 @@ const StepThree = ({ setNext }: { setNext: (step: number) => void }) => {
       value: "advanced",
     },
   ];
+
+  const handleNext = () => {
+    if (!user?.id || !user?.email) {
+      // Handle case where required fields are missing
+      return;
+    }
+    setUser({
+      ...user,
+      exercisePreferences: {
+        ...user?.exercisePreferences,
+        experienceLevel: experienceLevel,
+      },
+    });
+    setNext(4);
+  };
   return (
     <View style={styles.container}>
       <View style={styles.titleContainer}>
@@ -36,11 +55,11 @@ const StepThree = ({ setNext }: { setNext: (step: number) => void }) => {
         showsVerticalScrollIndicator={false}
       >
         <SingleSelectOption
-          options={fitnessGoalMap}
-          selectedValue={fitnessGoal}
-          onValueChange={setFitnessGoal}
+          options={experienceLevelMap}
+          selectedValue={experienceLevel}
+          onValueChange={setExperienceLevel}
         />
-        <Button onPress={() => setNext(4)}>Next</Button>
+        <Button onPress={handleNext}>Next</Button>
       </ScrollView>
     </View>
   );

@@ -6,26 +6,28 @@ import CustomText from "../CustomText";
 
 import Button from "../Button";
 import CustomPicker from "../CustomPicker";
+import { useUserStore } from "@/src/store";
+import {
+  SCHEDULE_PREFERENCE,
+  TIME_AVAILABLE,
+  WORKOUT_LOCATION,
+} from "@/src/types";
 
 const StepFour = ({ setNext }: { setNext: (step: number) => void }) => {
-  const [schedulePreference, setSchedulePreference] = useState<
-    "morning" | "afternoon" | "evening" | "anytime"
-  >("morning");
-  const [timeAvailable, setTimeAvailable] = useState<
-    | "30-mins"
-    | "1-hour"
-    | "1-hours-30-mins"
-    | "2-hours"
-    | "2-hours-30-mins"
-    | "3-hours"
-    | "more-than-3-hours"
-  >("1-hours-30-mins");
+  const { user, setUser } = useUserStore();
+  const [schedulePreference, setSchedulePreference] =
+    useState<SCHEDULE_PREFERENCE>(
+      user?.exercisePreferences?.schedulePreference || "morning"
+    );
+  const [timeAvailable, setTimeAvailable] = useState<TIME_AVAILABLE>(
+    user?.exercisePreferences?.timeAvailable || "1-hour-30-mins"
+  );
 
-  const [workoutLocation, setWorkoutLocation] = useState<
-    "home" | "gym" | "park" | "other"
-  >("gym");
+  const [workoutLocation, setWorkoutLocation] = useState<WORKOUT_LOCATION>(
+    user?.exercisePreferences?.workoutLocation || "gym"
+  );
 
-  const workoutLocationOptions = [
+  const workoutLocationOptions: { label: string; value: WORKOUT_LOCATION }[] = [
     {
       label: "Home",
       value: "home",
@@ -44,7 +46,10 @@ const StepFour = ({ setNext }: { setNext: (step: number) => void }) => {
     },
   ];
 
-  const schedulePreferenceOptions = [
+  const schedulePreferenceOptions: {
+    label: string;
+    value: SCHEDULE_PREFERENCE;
+  }[] = [
     {
       label: "Morning",
       value: "morning",
@@ -63,7 +68,7 @@ const StepFour = ({ setNext }: { setNext: (step: number) => void }) => {
     },
   ];
 
-  const timeAvailableOptions = [
+  const timeAvailableOptions: { label: string; value: TIME_AVAILABLE }[] = [
     {
       label: "30 mins",
       value: "30-mins",
@@ -73,8 +78,8 @@ const StepFour = ({ setNext }: { setNext: (step: number) => void }) => {
       value: "1-hour",
     },
     {
-      label: "1 hours 30 mins",
-      value: "1-hours-30-mins",
+      label: "1 hour 30 mins",
+      value: "1-hour-30-mins",
     },
     {
       label: "2 hours",
@@ -95,26 +100,33 @@ const StepFour = ({ setNext }: { setNext: (step: number) => void }) => {
   ];
 
   const handleSchedulePreferenceChange = (value: string) => {
-    setSchedulePreference(
-      value as "morning" | "afternoon" | "evening" | "anytime"
-    );
+    setSchedulePreference(value as SCHEDULE_PREFERENCE);
   };
 
   const handleTimeAvailableChange = (value: string) => {
-    setTimeAvailable(
-      value as
-        | "30-mins"
-        | "1-hour"
-        | "1-hours-30-mins"
-        | "2-hours"
-        | "2-hours-30-mins"
-        | "3-hours"
-        | "more-than-3-hours"
-    );
+    setTimeAvailable(value as TIME_AVAILABLE);
   };
 
   const handleWorkoutLocationChange = (value: string) => {
-    setWorkoutLocation(value as "home" | "gym" | "park" | "other");
+    setWorkoutLocation(value as WORKOUT_LOCATION);
+  };
+
+  const handleNext = () => {
+    if (!user?.id || !user?.email) {
+      // Handle case where required fields are missing
+      return;
+    }
+
+    setUser({
+      ...user,
+      exercisePreferences: {
+        ...user?.exercisePreferences,
+        schedulePreference: schedulePreference,
+        timeAvailable: timeAvailable,
+        workoutLocation: workoutLocation,
+      },
+    });
+    setNext(5);
   };
 
   return (
@@ -141,7 +153,7 @@ const StepFour = ({ setNext }: { setNext: (step: number) => void }) => {
           onValueChange={handleWorkoutLocationChange}
           label="Workout Location"
         />
-        <Button onPress={() => setNext(5)}>Next</Button>
+        <Button onPress={handleNext}>Next</Button>
       </View>
     </View>
   );

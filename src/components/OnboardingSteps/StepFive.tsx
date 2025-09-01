@@ -5,9 +5,13 @@ import Button from "../Button";
 import { GYM_EQUIPMENTS } from "@/src/constants";
 import SingleSelectOptionCard from "../SingleSelectOptionCard";
 import { FlashList } from "@shopify/flash-list";
+import { useUserStore } from "@/src/store";
 
 const StepFive = ({ setNext }: { setNext: (step: number) => void }) => {
-  const [selectedEquipments, setSelectedEquipments] = useState<string[]>([]);
+  const { user, setUser } = useUserStore();
+  const [selectedEquipments, setSelectedEquipments] = useState<string[]>(
+    user?.equipments || []
+  );
 
   const checkIsSelected = (value: string) => {
     return selectedEquipments.includes(value);
@@ -21,6 +25,19 @@ const StepFive = ({ setNext }: { setNext: (step: number) => void }) => {
     } else {
       setSelectedEquipments([...selectedEquipments, value]);
     }
+  };
+
+  const handleNext = () => {
+    if (!user?.id || !user?.email) {
+      // Handle case where required fields are missing
+      return;
+    }
+
+    setUser({
+      ...user,
+      equipments: selectedEquipments,
+    });
+    setNext(6);
   };
 
   return (

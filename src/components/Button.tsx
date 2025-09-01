@@ -38,9 +38,8 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "#fff",
     textAlign: "center",
-    fontFamily: "OutfitSemiBold",
+    fontFamily: "OutfitBold",
     fontSize: 16,
-    fontWeight: "bold",
   },
 });
 

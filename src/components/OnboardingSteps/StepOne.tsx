@@ -5,14 +5,41 @@ import CustomDatePicker from "../CustomDatePicker";
 import CustomText from "../CustomText";
 import SingleSelectRadio from "../SingleSelectRadio";
 import Button from "../Button";
+import { useUserStore } from "@/src/store";
 
 const StepOne = ({ setNext }: { setNext: (step: number) => void }) => {
-  const [fullName, setFullName] = useState("");
+  const { user, setUser } = useUserStore();
+  const [fullName, setFullName] = useState(user?.name || "");
   const [date, setDate] = useState(new Date());
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [gender, setGender] = useState("Male");
-  const [height, setHeight] = useState("");
-  const [weight, setWeight] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState(user?.phoneNumber || "");
+  const [gender, setGender] = useState(user?.physicalDetials?.gender || "Male");
+  const [height, setHeight] = useState(
+    user?.physicalDetials?.height?.toString() || ""
+  );
+  const [weight, setWeight] = useState(
+    user?.physicalDetials?.weight?.toString() || ""
+  );
+
+  const handleNext = () => {
+    if (!user?.id || !user?.email) {
+      // Handle case where required fields are missing
+      return;
+    }
+
+    setUser({
+      ...user,
+      name: fullName,
+      phoneNumber: phoneNumber,
+      physicalDetials: {
+        ...user?.physicalDetials,
+        gender: gender,
+        height: Number(height),
+        weight: Number(weight),
+      },
+    });
+    setNext(2);
+  };
+
   return (
     <View style={styles.container}>
       <CustomText style={styles.title}>Personal Details</CustomText>
@@ -69,7 +96,7 @@ const StepOne = ({ setNext }: { setNext: (step: number) => void }) => {
           handleValueChange={setWeight}
         />
       </ScrollView>
-      <Button onPress={() => setNext(2)}>Next</Button>
+      <Button onPress={handleNext}>Next</Button>
     </View>
   );
 };

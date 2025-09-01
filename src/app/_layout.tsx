@@ -6,7 +6,7 @@ import { SplashScreen } from "expo-router";
 export default function RootLayout() {
   const [loaded] = useFonts({
     OutfitRegular: require("../../assets/fonts/Outfit-Regular.ttf"),
-    OutfitSemiBold: require("../../assets/fonts/Outfit-SemiBold.ttf"),
+    OutfitBold: require("../../assets/fonts/Outfit-Bold.ttf"),
   });
 
   if (!loaded) {

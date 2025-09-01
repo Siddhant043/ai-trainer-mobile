@@ -6,23 +6,29 @@ import CustomText from "../CustomText";
 
 import Button from "../Button";
 import CustomPicker from "../CustomPicker";
-import { STATE } from "@/src/types";
+import {
+  DIETARY_RESTRICTIONS,
+  FASTING_PREFERENCE,
+  STATE,
+  User,
+} from "@/src/types";
 import { STATES_MAP } from "@/src/constants";
+import { useUserStore } from "@/src/store";
 
 const StepSix = ({ setNext }: { setNext: (step: number) => void }) => {
-  const [dietaryRestrictions, setDietaryRestrictions] = useState<
-    | "vegetarian"
-    | "vegan"
-    | "non-vegetarian"
-    | "gluten-free"
-    | "lactose-free"
-    | "other"
-    | "none"
-  >("vegetarian");
+  const { user, setUser } = useUserStore();
+  const [dietaryRestrictions, setDietaryRestrictions] =
+    useState<DIETARY_RESTRICTIONS>(
+      user?.dietaryPreferences?.dietaryRestrictions || "vegetarian"
+    );
 
-  const [state, setState] = useState<STATE>("delhi");
+  const [state, setState] = useState<STATE>(
+    user?.dietaryPreferences?.state || "delhi"
+  );
 
-  const [fastingPractices, setFastingPractices] = useState<string>("navratri");
+  const [fastingPractices, setFastingPractices] = useState<FASTING_PREFERENCE>(
+    user?.dietaryPreferences?.fastingPreference || "navratri"
+  );
 
   const dietaryRestrictionsOptions = [
     {
@@ -86,7 +92,29 @@ const StepSix = ({ setNext }: { setNext: (step: number) => void }) => {
   };
 
   const handleFastingPracticesChange = (value: string) => {
-    setFastingPractices(value);
+    setFastingPractices(value as FASTING_PREFERENCE);
+  };
+
+  const submitUser = async (user: User) => {
+    // await submituser(user)
+    console.log(user.name);
+  };
+
+  const handleNext = async () => {
+    if (!user?.id || !user?.email) {
+      // Handle case where required fields are missing
+      return;
+    }
+    setUser({
+      ...user,
+      dietaryPreferences: {
+        ...user?.dietaryPreferences,
+        dietaryRestrictions: dietaryRestrictions,
+        state: state as STATE,
+        fastingPreference: fastingPractices as FASTING_PREFERENCE,
+      },
+    });
+    await submitUser(user);
   };
 
   return (
@@ -114,7 +142,7 @@ const StepSix = ({ setNext }: { setNext: (step: number) => void }) => {
           label="Fasting Practices"
         />
 
-        <Button onPress={() => setNext(7)}>Next</Button>
+        <Button onPress={handleNext}>Next</Button>
       </View>
     </View>
   );

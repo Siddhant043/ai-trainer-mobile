@@ -36,3 +36,39 @@ export type STATE =
   | "uttar-pradesh"
   | "uttarakhand"
   | "west-bengal";
+
+export type DIETARY_RESTRICTIONS =
+  | "vegetarian"
+  | "vegan"
+  | "non-vegetarian"
+  | "gluten-free"
+  | "lactose-free"
+  | "other"
+  | "none";
+
+export type FASTING_PREFERENCE = "navratri" | "ramadan" | "other" | "none";
+
+export type FITNESS_GOAL =
+  | "weight-loss"
+  | "muscle-gain"
+  | "recomposition"
+  | "endurance";
+
+export type EXPERIENCE_LEVEL = "beginner" | "intermediate" | "advanced";
+
+export type SCHEDULE_PREFERENCE =
+  | "morning"
+  | "evening"
+  | "afternoon"
+  | "anytime";
+
+export type TIME_AVAILABLE =
+  | "30-mins"
+  | "1-hour"
+  | "1-hour-30-mins"
+  | "2-hours"
+  | "2-hours-30-mins"
+  | "3-hours"
+  | "more-than-3-hours";
+
+export type WORKOUT_LOCATION = "home" | "gym" | "park" | "other";

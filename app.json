@@ -28,7 +28,7 @@
         {
           "fonts": [
             "./assets/fonts/Outfit-Regular.ttf",
-            "./assets/fonts/Outfit-SemiBold.ttf"
+            "./assets/fonts/Outfit-Bold.ttf"
           ],
           "android": {
             "fonts": [
@@ -36,8 +36,8 @@
                 "fontFamily": "Outfit",
                 "fontDefinitions": [
                   {
-                    "path": "./assets/fonts/Outfit-SemiBold.ttf",
-                    "weight": 600
+                    "path": "./assets/fonts/Outfit-Bold.ttf",
+                    "weight": 700
                   },
                   {
                     "path": "./assets/fonts/Outfit-Regular.ttf",
@@ -49,7 +49,7 @@
           },
           "ios": {
             "fonts": [
-              "./assets/fonts/Outfit-SemiBold.ttf",
+              "./assets/fonts/Outfit-Bold.ttf",
               "./assets/fonts/Outfit-Regular.ttf"
             ]
           }

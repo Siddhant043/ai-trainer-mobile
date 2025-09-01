@@ -1,9 +1,20 @@
+import {
+  DIETARY_RESTRICTIONS,
+  EXPERIENCE_LEVEL,
+  FASTING_PREFERENCE,
+  FITNESS_GOAL,
+  SCHEDULE_PREFERENCE,
+  STATE,
+  TIME_AVAILABLE,
+  WORKOUT_LOCATION,
+} from ".";
+
 interface User {
   id: string;
   name: string;
   email: string;
   avatar?: string;
-  phoneNumber?: number;
+  phoneNumber?: string;
   dob?: string;
   physicalDetials?: {
     weight?: number;
@@ -11,16 +22,16 @@ interface User {
     gender?: string;
   };
   dietaryPreferences?: {
-    dietaryRestrictions?: string;
-    state?: string;
-    fastingPreference?: string;
+    dietaryRestrictions?: DIETARY_RESTRICTIONS;
+    state?: STATE;
+    fastingPreference?: FASTING_PREFERENCE;
   };
   exercisePreferences?: {
-    goal?: string;
-    experienceLevel?: string;
-    schedulePreference?: string;
-    timeAvailable?: string;
-    workoutLocation?: string;
+    fitnessGoal?: FITNESS_GOAL;
+    experienceLevel?: EXPERIENCE_LEVEL;
+    schedulePreference?: SCHEDULE_PREFERENCE;
+    timeAvailable?: TIME_AVAILABLE;
+    workoutLocation?: WORKOUT_LOCATION;
   };
   updatedAt?: string;
   timezone?: string;
