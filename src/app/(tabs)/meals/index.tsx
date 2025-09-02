@@ -3,12 +3,12 @@ import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import CustomText from "@/src/components/CustomText";
 
-const Home = () => {
+const Meals = () => {
   return (
     <SafeAreaView>
-      <CustomText>Home</CustomText>
+      <CustomText>Meals</CustomText>
     </SafeAreaView>
   );
 };
 
-export default Home;
+export default Meals;

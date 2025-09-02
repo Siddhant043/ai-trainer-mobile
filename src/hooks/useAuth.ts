@@ -19,6 +19,7 @@ export const useLogin = () => {
 
 export const useVerifyOtp = () => {
   const { setIsAuthenticated, setUser } = useUserStore();
+  const router = useRouter();
   const {
     mutate: verifyOtp,
     isPending,
@@ -30,6 +31,9 @@ export const useVerifyOtp = () => {
       setIsAuthenticated(true);
       SecureStore.setItemAsync("token", data.token);
       setUser(data.user);
+      data.user.isOnboarded
+        ? router.navigate("/(tabs)" as RelativePathString)
+        : router.navigate("/onboarding" as RelativePathString);
     },
   });
   return { verifyOtp, isPending, error };
@@ -58,7 +62,7 @@ export const useCheckUserLoggedIn = () => {
         if (!getCurrentUserQuery.data.isOnboarded) {
           router.navigate("/onboarding" as RelativePathString);
         } else {
-          router.navigate("/home" as RelativePathString);
+          router.navigate("/(tabs)" as RelativePathString);
         }
       } else if (getCurrentUserQuery.error) {
         // Query failed, token might be invalid

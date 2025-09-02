@@ -1,5 +1,5 @@
-import { View, Text, StyleSheet } from "react-native";
-import React, { useState } from "react";
+import { View, StyleSheet } from "react-native";
+import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import ProgressHeader from "@/src/components/OnboardingHeader";
@@ -9,9 +9,19 @@ import StepThree from "@/src/components/OnboardingSteps/StepThree";
 import StepFour from "@/src/components/OnboardingSteps/StepFour";
 import StepFive from "@/src/components/OnboardingSteps/StepFive";
 import StepSix from "@/src/components/OnboardingSteps/StepSix";
+import { useUserStore } from "@/src/store";
+import { RelativePathString, useRouter } from "expo-router";
 
 const Onboarding = () => {
   const [step, setStep] = useState(1);
+  const { user } = useUserStore();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (user.isOnboarded) {
+      router.navigate("/(tabs)" as RelativePathString);
+    }
+  }, [user.isOnboarded]);
 
   const stepMapping = (step: number) => {
     switch (step) {
@@ -62,6 +72,7 @@ const Onboarding = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    padding: 20,
   },
   headerContainer: {
     flexDirection: "row",
