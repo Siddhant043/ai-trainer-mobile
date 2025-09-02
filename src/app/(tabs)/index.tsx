@@ -5,6 +5,7 @@ import CustomText from "@/src/components/CustomText";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { useUserStore } from "@/src/store";
 import { router } from "expo-router";
+import CircularProgress from "@/src/components/CircularProgress";
 
 const Home = () => {
   const { user } = useUserStore();
@@ -15,6 +16,7 @@ const Home = () => {
           <View style={styles.headerLeft}>
             <TouchableOpacity
               style={styles.headerLeftIconContainer}
+              activeOpacity={0.8}
               onPress={() => {}}
             >
               <FontAwesome5 name="user" size={16} color="black" />
@@ -34,6 +36,32 @@ const Home = () => {
             <FontAwesome5 name="bell" size={20} color="black" />
           </TouchableOpacity>
         </View>
+        <View style={styles.circularProgressSection}>
+          <View style={styles.circularProgressContainer}>
+            <CircularProgress progress={0.7} />
+            <CustomText style={styles.dayText}>Mon</CustomText>
+          </View>
+          <View style={styles.circularProgressContainer}>
+            <CircularProgress progress={0.6} />
+            <CustomText style={styles.dayText}>Tue</CustomText>
+          </View>
+          <View style={styles.circularProgressContainer}>
+            <CircularProgress progress={0.45} />
+            <CustomText style={styles.dayText}>Wed</CustomText>
+          </View>
+          <View style={styles.circularProgressContainer}>
+            <CircularProgress progress={0.8} />
+            <CustomText style={styles.dayText}>Thu</CustomText>
+          </View>
+          <View style={styles.circularProgressContainer}>
+            <CircularProgress progress={0.56} />
+            <CustomText style={styles.dayText}>Fri</CustomText>
+          </View>
+          <View style={styles.circularProgressContainer}>
+            <CircularProgress progress={0.67} active={true} />
+            <CustomText style={styles.dayText}>Sat</CustomText>
+          </View>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -42,10 +70,10 @@ const Home = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    flexDirection: "column",
     padding: 20,
   },
   header: {
-    width: "100%",
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
@@ -75,6 +103,21 @@ const styles = StyleSheet.create({
     color: "black",
   },
   headerRight: {},
+  circularProgressSection: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    height: 100,
+  },
+  circularProgressContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  dayText: {
+    fontSize: 16,
+    color: "#707070",
+  },
 });
 
 export default Home;
