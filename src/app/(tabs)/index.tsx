@@ -6,6 +6,7 @@ import { FontAwesome5 } from "@expo/vector-icons";
 import { useUserStore } from "@/src/store";
 import { RelativePathString, useRouter } from "expo-router";
 import CircularProgress from "@/src/components/CircularProgress";
+import TrackCaloriesHome from "@/src/components/TrackCaloriesHome";
 
 const Home = () => {
   const { user } = useUserStore();
@@ -63,6 +64,7 @@ const Home = () => {
             <CustomText style={styles.dayText}>Sat</CustomText>
           </View>
         </View>
+        <TrackCaloriesHome />
       </ScrollView>
     </SafeAreaView>
   );
