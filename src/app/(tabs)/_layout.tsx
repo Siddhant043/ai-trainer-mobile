@@ -72,6 +72,13 @@ export default function RootLayout() {
           tabBarIcon: ({ focused }) => <ChatTabIcon focused={focused} />,
         }}
       />
+
+      <Tabs.Screen
+        name="notifications"
+        options={{
+          href: null,
+        }}
+      />
     </Tabs>
   );
 }

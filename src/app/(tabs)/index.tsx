@@ -4,11 +4,12 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import CustomText from "@/src/components/CustomText";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { useUserStore } from "@/src/store";
-import { router } from "expo-router";
+import { RelativePathString, useRouter } from "expo-router";
 import CircularProgress from "@/src/components/CircularProgress";
 
 const Home = () => {
   const { user } = useUserStore();
+  const router = useRouter();
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -30,7 +31,7 @@ const Home = () => {
             style={styles.headerRight}
             activeOpacity={0.8}
             onPress={() => {
-              //router.push("/notifications");
+              router.push("/notifications" as RelativePathString);
             }}
           >
             <FontAwesome5 name="bell" size={20} color="black" />

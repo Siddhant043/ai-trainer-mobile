@@ -5,6 +5,7 @@ import { useUserStore } from "../store";
 import * as SecureStore from "expo-secure-store";
 import { useUser } from "./useUser";
 import { RelativePathString, useRouter } from "expo-router";
+import storage from "../config/storage";
 
 export const useLogin = () => {
   const {
@@ -32,7 +33,7 @@ export const useVerifyOtp = () => {
       SecureStore.setItemAsync("token", data.token);
       setUser(data.user);
       data.user.isOnboarded
-        ? router.navigate("/(tabs)" as RelativePathString)
+        ? router.navigate("/login" as RelativePathString)
         : router.navigate("/onboarding" as RelativePathString);
     },
   });

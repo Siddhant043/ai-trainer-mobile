@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { StatusBar, View } from "react-native";
 import CustomText from "../components/CustomText";
 import { useCheckUserLoggedIn } from "../hooks/useAuth";
 
@@ -13,6 +13,7 @@ export default function Index() {
         alignItems: "center",
       }}
     >
+      <StatusBar barStyle="dark-content" />
       <CustomText>
         {isLoading ? "Loading..." : "Checking authentication..."}
       </CustomText>

@@ -4,28 +4,33 @@
     "slug": "mobile",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/logo.png",
+    "icon": "./assets/images/icon.png",
     "scheme": "mobile",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "entryPoint": "./src/app/index.tsx",
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/images/ios-dark.png",
+        "backgroundColor": "#000"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.ai-trainer.mobile"
+      "package": "com.aiTrainer.mobile"
     },
     "ios": {
       "config": {
         "usesNonExemptEncryption": false
-      }
+      },
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/ios-dark.png",
+        "backgroundColor": "#000000"
+      },
+      "bundleIdentifier": "com.aiTrainer.mobile"
     },
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/logo.png"
+      "favicon": "./assets/images/icon.png"
     },
     "plugins": [
       [
