@@ -3,24 +3,28 @@ import React from "react";
 import CustomText from "./CustomText";
 import CalorieBurnIcon from "./CalorieBurnIcon";
 import CustomTextInput from "./CustomTextInput";
+import ProgressLine from "./ProgressLine";
 
-const TrackCaloriesHome = () => {
+const CurrentMacrosCard = () => {
   const macrosMap = [
     {
-      label: "Protein left",
-      remainging: "80g",
+      label: "Protein",
+      nominator: 28,
+      denominator: 130,
       icon: require("@/assets/macros/protein.png"),
       backgroundColor: "#F1D4BA",
     },
     {
-      label: "Carbs left",
-      remainging: "200g",
+      label: "Carbs",
+      nominator: 200,
+      denominator: 300,
       icon: require("@/assets/macros/carbs.png"),
       backgroundColor: "#D8EBED",
     },
     {
-      label: "Fats left",
-      remainging: "100g",
+      label: "Fats",
+      nominator: 8,
+      denominator: 10,
       icon: require("@/assets/macros/fat.png"),
       backgroundColor: "#B8E5BE",
     },
@@ -37,7 +41,7 @@ const TrackCaloriesHome = () => {
                   442
                 </CustomText>
                 <CustomText style={styles.calorieBurnTextValueDenominator}>
-                  /2200 Kcal
+                  /2200
                 </CustomText>
               </View>
               <CustomText style={styles.calorieBurnText}>
@@ -58,21 +62,31 @@ const TrackCaloriesHome = () => {
       <View style={styles.bottomSection}>
         {macrosMap.map((macro) => (
           <View key={macro.label} style={styles.macroItem}>
-            <CustomText style={styles.remainginValue}>
-              {macro.remainging}
-            </CustomText>
-            <CustomText style={styles.macroLabel}>{macro.label}</CustomText>
-            <View
-              style={[
-                styles.macroIconContainer,
-                { backgroundColor: macro.backgroundColor },
-              ]}
-            >
-              <Image
-                source={macro.icon}
-                style={styles.macroIcon}
-                resizeMode="contain"
-              />
+            <View style={styles.macroItemLeft}>
+              <View
+                style={[
+                  styles.macroIconContainer,
+                  { backgroundColor: macro.backgroundColor },
+                ]}
+              >
+                <Image
+                  source={macro.icon}
+                  style={styles.macroIcon}
+                  resizeMode="contain"
+                />
+              </View>
+              <CustomText style={styles.macroLabel}>{macro.label}</CustomText>
+            </View>
+            <ProgressLine progress={macro.nominator / macro.denominator} />
+            <View style={styles.macroTextContainer}>
+              <View style={styles.calorieBurnTextValueContainer}>
+                <CustomText style={styles.macroTextValueNominator}>
+                  {macro.nominator}
+                </CustomText>
+                <CustomText style={styles.macroTextValueDenominator}>
+                  /{macro.denominator}g
+                </CustomText>
+              </View>
             </View>
           </View>
         ))}
@@ -155,23 +169,27 @@ const styles = StyleSheet.create({
   },
   bottomSection: {
     flex: 1,
-    flexDirection: "row",
+    flexDirection: "column",
     justifyContent: "space-between",
-    alignItems: "center",
+    alignItems: "flex-start",
     gap: 20,
+    width: "100%",
   },
   macroItem: {
     flex: 1,
     marginTop: 20,
-    flexDirection: "column",
+    flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
   },
-  remainginValue: {
-    fontSize: 16,
-    fontFamily: "Outfit-SemiBold",
+  macroItemLeft: {
+    flexDirection: "row",
+    alignItems: "center",
+    flex: 1,
+    gap: 10,
   },
   macroLabel: {
-    fontSize: 12,
+    fontSize: 16,
     color: "#707070",
   },
   macroIconContainer: {
@@ -180,7 +198,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     height: 48,
     width: 48,
-    marginTop: 10,
+
     backgroundColor: "#EDEDED",
     borderRadius: 100,
   },
@@ -188,6 +206,21 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
   },
+  macroTextContainer: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    alignItems: "center",
+  },
+  macroTextValueNominator: {
+    fontSize: 16,
+    color: "black",
+    fontFamily: "Outfit-SemiBold",
+  },
+  macroTextValueDenominator: {
+    fontSize: 12,
+    color: "#707070",
+  },
 });
 
-export default TrackCaloriesHome;
+export default CurrentMacrosCard;
