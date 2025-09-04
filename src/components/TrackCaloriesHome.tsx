@@ -1,10 +1,30 @@
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Image } from "react-native";
 import React from "react";
 import CustomText from "./CustomText";
 import CalorieBurnIcon from "./CalorieBurnIcon";
 import CustomTextInput from "./CustomTextInput";
 
 const TrackCaloriesHome = () => {
+  const macrosMap = [
+    {
+      label: "Protein left",
+      remainging: "80g",
+      icon: require("@/assets/macros/protein.png"),
+      backgroundColor: "#F1D4BA",
+    },
+    {
+      label: "Carbs left",
+      remainging: "200g",
+      icon: require("@/assets/macros/carbs.png"),
+      backgroundColor: "#D8EBED",
+    },
+    {
+      label: "Fats left",
+      remainging: "100g",
+      icon: require("@/assets/macros/fat.png"),
+      backgroundColor: "#B8E5BE",
+    },
+  ];
   return (
     <View style={styles.container}>
       <View style={styles.topSection}>
@@ -35,7 +55,28 @@ const TrackCaloriesHome = () => {
           </CustomText>
         </View>
       </View>
-      <View style={styles.bottomSection}></View>
+      <View style={styles.bottomSection}>
+        {macrosMap.map((macro) => (
+          <View key={macro.label} style={styles.macroItem}>
+            <CustomText style={styles.remainginValue}>
+              {macro.remainging}
+            </CustomText>
+            <CustomText style={styles.macroLabel}>{macro.label}</CustomText>
+            <View
+              style={[
+                styles.macroIconContainer,
+                { backgroundColor: macro.backgroundColor },
+              ]}
+            >
+              <Image
+                source={macro.icon}
+                style={styles.macroIcon}
+                resizeMode="contain"
+              />
+            </View>
+          </View>
+        ))}
+      </View>
     </View>
   );
 };
@@ -45,7 +86,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginVertical: 20,
     flexDirection: "column",
-    padding: 20,
+    padding: 15,
     backgroundColor: "#fff",
     borderRadius: 16,
     justifyContent: "center",
@@ -112,7 +153,41 @@ const styles = StyleSheet.create({
     color: "black",
     fontFamily: "Outfit-SemiBold",
   },
-  bottomSection: {},
+  bottomSection: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    gap: 20,
+  },
+  macroItem: {
+    flex: 1,
+    marginTop: 20,
+    flexDirection: "column",
+    alignItems: "center",
+  },
+  remainginValue: {
+    fontSize: 16,
+    fontFamily: "Outfit-SemiBold",
+  },
+  macroLabel: {
+    fontSize: 12,
+    color: "#707070",
+  },
+  macroIconContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    height: 48,
+    width: 48,
+    marginTop: 10,
+    backgroundColor: "#EDEDED",
+    borderRadius: 100,
+  },
+  macroIcon: {
+    width: 28,
+    height: 28,
+  },
 });
 
 export default TrackCaloriesHome;

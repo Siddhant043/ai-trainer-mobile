@@ -1,4 +1,10 @@
-import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
+import {
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import CustomText from "@/src/components/CustomText";
@@ -7,12 +13,15 @@ import { useUserStore } from "@/src/store";
 import { RelativePathString, useRouter } from "expo-router";
 import CircularProgress from "@/src/components/CircularProgress";
 import TrackCaloriesHome from "@/src/components/TrackCaloriesHome";
+import AgentMessage from "@/src/components/AgentMessage";
+import EmptyWorkoutPlan from "@/src/components/EmptyWorkoutPlan";
 
 const Home = () => {
   const { user } = useUserStore();
   const router = useRouter();
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="dark-content" />
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
           <View style={styles.headerLeft}>
@@ -65,6 +74,11 @@ const Home = () => {
           </View>
         </View>
         <TrackCaloriesHome />
+        <AgentMessage
+          type="suggestion"
+          value="Add 10 mins inclined walking and 5 mins cycling after workout."
+        />
+        <EmptyWorkoutPlan />
       </ScrollView>
     </SafeAreaView>
   );
@@ -74,7 +88,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: "column",
-    padding: 20,
+    padding: 10,
   },
   header: {
     flexDirection: "row",
@@ -118,7 +132,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   dayText: {
-    fontSize: 16,
+    fontSize: 12,
+    marginTop: 5,
     color: "#707070",
   },
 });
