@@ -126,11 +126,13 @@ const styles = StyleSheet.create({
   },
   macroLabel: {
     fontSize: 12,
+    color: "#707070",
   },
   macroIconContainer: {
     backgroundColor: "#D4D4D4",
     borderRadius: 100,
     padding: 12,
+    marginBottom: 10,
   },
   macroIcon: {
     width: 24,

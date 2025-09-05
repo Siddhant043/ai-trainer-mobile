@@ -1,21 +1,25 @@
-import { View, Text, StyleSheet, ScrollView } from "react-native";
+import { View, Text, StyleSheet, ScrollView, Pressable } from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import CustomText from "@/src/components/CustomText";
-import { Link } from "expo-router";
+import { useRouter } from "expo-router";
 import CurrentMacrosCard from "@/src/components/CurrentMacrosCard";
 import Button from "@/src/components/Button";
 import TodayMeals from "@/src/components/TodayMeals";
 
 const Meals = () => {
+  const router = useRouter();
+  const handleCheckHistory = () => {
+    router.navigate("/(tabs)");
+  };
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
           <CustomText style={styles.title}>Today's Macros</CustomText>
-          <Link href="/(tabs)" style={styles.link}>
-            Check History
-          </Link>
+          <Pressable onPress={handleCheckHistory}>
+            <CustomText style={styles.link}>Check History</CustomText>
+          </Pressable>
         </View>
         <CurrentMacrosCard />
         <Button onPress={() => {}}>Add Meal</Button>

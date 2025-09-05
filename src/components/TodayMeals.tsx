@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
 import React from "react";
 import CustomText from "./CustomText";
 import { FlashList } from "@shopify/flash-list";
@@ -29,7 +29,7 @@ const TodayMeals = () => {
   ];
   return (
     <View style={styles.container}>
-      <CustomText style={styles.title}>Today Meals</CustomText>
+      <CustomText style={styles.title}>Meals Consumed Today</CustomText>
       <FlashList
         data={mealData}
         renderItem={({ item }) => <MealItem meal={item} />}
@@ -46,6 +46,8 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
+    color: "#707070",
+    marginBottom: 10,
   },
 });
 
