@@ -5,7 +5,7 @@ import CustomText from "@/src/components/CustomText";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 
-const notifications = () => {
+const Notifications = () => {
   const router = useRouter();
   return (
     <SafeAreaView style={styles.container}>
@@ -36,4 +36,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default notifications;
+export default Notifications;
