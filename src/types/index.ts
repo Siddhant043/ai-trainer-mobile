@@ -1,6 +1,7 @@
 export { default as User } from "./userTypes";
 
 export type STATE =
+  | "andaman-and-nicobar-islands"
   | "andhra-pradesh"
   | "arunachal-pradesh"
   | "assam"

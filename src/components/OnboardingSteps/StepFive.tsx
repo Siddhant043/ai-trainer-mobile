@@ -49,6 +49,7 @@ const StepFive = ({ setNext }: { setNext: (step: number) => void }) => {
           style={styles.flashList}
           numColumns={2}
           data={GYM_EQUIPMENTS}
+          estimatedItemSize={100}
           showsVerticalScrollIndicator={false}
           ItemSeparatorComponent={() => <View style={{ height: 12 }} />} // vertical gap // horizontal gap when numColumns > 1
           renderItem={({ item, index }) => (

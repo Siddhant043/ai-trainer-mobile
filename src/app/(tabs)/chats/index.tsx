@@ -54,6 +54,7 @@ const Chats = () => {
         </View>
         <FlashList
           data={recentChats}
+          estimatedItemSize={100}
           renderItem={({ item }) => (
             <ChatTile key={item.id} id={item.id} title={item.title} />
           )}
@@ -64,6 +65,7 @@ const Chats = () => {
         </View>
         <FlashList
           data={historyChats}
+          estimatedItemSize={100}
           renderItem={({ item }) => (
             <ChatTile key={item.id} id={item.id} title={item.title} />
           )}

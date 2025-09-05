@@ -11,7 +11,6 @@ export default function RootLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-
         tabBarActiveTintColor: "#fff",
         tabBarInactiveTintColor: "#666666",
         tabBarStyle: {
@@ -34,7 +33,7 @@ export default function RootLayout() {
       }}
     >
       <Tabs.Screen
-        name="index"
+        name="home/index"
         options={{
           tabBarLabel: "",
           tabBarIcon: ({ focused }) => <HomeTabIcon focused={focused} />,
@@ -72,7 +71,6 @@ export default function RootLayout() {
           tabBarIcon: ({ focused }) => <ChatTabIcon focused={focused} />,
         }}
       />
-
       <Tabs.Screen
         name="notifications"
         options={{

@@ -15,10 +15,12 @@ import CircularProgress from "@/src/components/CircularProgress";
 import TrackCaloriesHome from "@/src/components/TrackCaloriesHome";
 import AgentMessage from "@/src/components/AgentMessage";
 import EmptyWorkoutPlan from "@/src/components/EmptyWorkoutPlan";
+import DrawerModal from "@/src/components/DrawerModal";
 
 const Home = () => {
   const { user } = useUserStore();
   const router = useRouter();
+  const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" />
@@ -28,7 +30,9 @@ const Home = () => {
             <TouchableOpacity
               style={styles.headerLeftIconContainer}
               activeOpacity={0.8}
-              onPress={() => {}}
+              onPress={() => {
+                setIsDrawerOpen(true);
+              }}
             >
               <FontAwesome5 name="user" size={16} color="black" />
             </TouchableOpacity>
@@ -80,6 +84,10 @@ const Home = () => {
         />
         <EmptyWorkoutPlan />
       </ScrollView>
+      <DrawerModal
+        isOpen={isDrawerOpen}
+        onClose={() => setIsDrawerOpen(false)}
+      />
     </SafeAreaView>
   );
 };

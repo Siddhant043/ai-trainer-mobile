@@ -19,7 +19,7 @@ const Onboarding = () => {
 
   useEffect(() => {
     if (user.isOnboarded) {
-      router.navigate("/(tabs)" as RelativePathString);
+      router.navigate("/(tabs)/home" as RelativePathString);
     }
   }, [user.isOnboarded]);
 

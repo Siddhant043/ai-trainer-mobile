@@ -1,8 +1,9 @@
 import { useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import useUserStore from "../store/userStore";
 import storage from "../config/storage";
 import { userAPI } from "../api/user";
+import { User } from "../types";
 
 export const useUser = () => {
   const { setUser } = useUserStore();
@@ -35,4 +36,21 @@ export const useUser = () => {
   }, [getCurrentUserQuery.data, currentUser, setUser]);
 
   return { getCurrentUserQuery };
+};
+
+export const useUpdateUser = () => {
+  const { setUser } = useUserStore();
+  const updateUserMutation = useMutation({
+    mutationFn: (user: User) => {
+      return userAPI.updateUser(user);
+    },
+    onSuccess: (data: User) => {
+      setUser(data);
+    },
+    onError: (error: any) => {
+      console.error("Failed to update user:", error);
+    },
+  });
+
+  return { updateUserMutation };
 };

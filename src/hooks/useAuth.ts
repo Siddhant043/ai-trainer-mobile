@@ -4,8 +4,9 @@ import { useMutation } from "@tanstack/react-query";
 import { useUserStore } from "../store";
 import * as SecureStore from "expo-secure-store";
 import { useUser } from "./useUser";
-import { RelativePathString, useRouter } from "expo-router";
+import { RelativePathString, router, useRouter } from "expo-router";
 import storage from "../config/storage";
+import { User } from "../types";
 
 export const useLogin = () => {
   const {
@@ -63,7 +64,7 @@ export const useCheckUserLoggedIn = () => {
         if (!getCurrentUserQuery.data.isOnboarded) {
           router.navigate("/onboarding" as RelativePathString);
         } else {
-          router.navigate("/(tabs)" as RelativePathString);
+          router.navigate("/(tabs)/home" as RelativePathString);
         }
       } else if (getCurrentUserQuery.error) {
         // Query failed, token might be invalid
@@ -86,4 +87,15 @@ export const useCheckUserLoggedIn = () => {
   }, [getCurrentUserQuery.data, getCurrentUserQuery.error]);
 
   return { checkAuthStatus, isLoading: getCurrentUserQuery.isLoading };
+};
+
+export const useLogout = () => {
+  const { setIsAuthenticated, setUser } = useUserStore();
+  const logout = async () => {
+    await SecureStore.deleteItemAsync("token");
+    setIsAuthenticated(false);
+    setUser({} as User);
+    router.navigate("/login" as any);
+  };
+  return { logout };
 };

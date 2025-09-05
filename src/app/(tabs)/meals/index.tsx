@@ -12,7 +12,7 @@ const Meals = () => {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const handleCheckHistory = () => {
-    router.navigate("/(tabs)");
+    router.navigate("/(tabs)/home");
   };
 
   return (

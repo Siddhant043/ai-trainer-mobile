@@ -159,6 +159,10 @@ export const GYM_EQUIPMENTS = [
   },
 ];
 export const STATES_MAP: { value: STATE; label: string }[] = [
+  {
+    value: "andaman-and-nicobar-islands",
+    label: "Andaman and Nicobar Islands",
+  },
   { value: "andhra-pradesh", label: "Andhra Pradesh" },
   { value: "arunachal-pradesh", label: "Arunachal Pradesh" },
   { value: "assam", label: "Assam" },

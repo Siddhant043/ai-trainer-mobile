@@ -32,6 +32,7 @@ const TodayMeals = () => {
       <CustomText style={styles.title}>Meals Consumed Today</CustomText>
       <FlashList
         data={mealData}
+        estimatedItemSize={100}
         renderItem={({ item }) => <MealItem meal={item} />}
       />
     </View>
