@@ -1,4 +1,11 @@
-import { View, StyleSheet, Image } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+} from "react-native";
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import CustomTextInput from "@/src/components/CustomTextInput";
@@ -38,31 +45,43 @@ const Login = () => {
   };
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.titleContainer}>
-        <Image
-          source={require("../../../assets/images/logo.png")}
-          style={styles.logo}
-        />
-        <CustomText style={styles.title}>Log in or Sign up</CustomText>
-      </View>
-      <View style={styles.inputContainer}>
-        <CustomTextInput
-          label="Enter your email"
-          type="email-address"
-          placeholder="john@example.com"
-          value={email}
-          handleValueChange={setEmail}
-        />
-        {emailError && (
-          <CustomText style={styles.error}>{errorMessage}</CustomText>
-        )}
-        <Button onPress={handleLogin} disabled={isPending}>
-          {isPending ? "Loading..." : "Submit"}
-        </Button>
-        <CustomText style={styles.text}>or</CustomText>
-        <GoogleSignInButton />
-        <AppleSignInButton />
-      </View>
+      <KeyboardAvoidingView
+        style={styles.keyboardAvoidingView}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
+      >
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+        >
+          <View style={styles.titleContainer}>
+            <Image
+              source={require("../../../assets/images/logo.png")}
+              style={styles.logo}
+            />
+            <CustomText style={styles.title}>Log in or Sign up</CustomText>
+          </View>
+          <View style={styles.inputContainer}>
+            <CustomTextInput
+              label="Enter your email"
+              type="email-address"
+              placeholder="john@example.com"
+              value={email}
+              handleValueChange={setEmail}
+            />
+            {emailError && (
+              <CustomText style={styles.error}>{errorMessage}</CustomText>
+            )}
+            <Button onPress={handleLogin} disabled={isPending}>
+              {isPending ? "Loading..." : "Submit"}
+            </Button>
+            <CustomText style={styles.text}>or</CustomText>
+            <GoogleSignInButton />
+            <AppleSignInButton />
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
@@ -72,6 +91,16 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     padding: 10,
+  },
+  keyboardAvoidingView: {
+    flex: 1,
+    width: "100%",
+  },
+  scrollContent: {
+    flexGrow: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingVertical: 20,
   },
   title: {
     fontSize: 32,
@@ -84,12 +113,13 @@ const styles = StyleSheet.create({
   titleContainer: {
     flexDirection: "column",
     alignItems: "center",
-    justifyContent: "space-between",
-    height: "30%",
+    justifyContent: "center",
+    minHeight: 200,
     marginBottom: 30,
   },
   inputContainer: {
     width: "100%",
+    maxWidth: 400,
     gap: 10,
   },
   text: {

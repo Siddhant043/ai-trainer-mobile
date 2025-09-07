@@ -6,6 +6,7 @@ import CustomText from "../CustomText";
 import SingleSelectRadio from "../SingleSelectRadio";
 import Button from "../Button";
 import { useUserStore } from "@/src/store";
+import { protectFromNaN } from "@/src/utils/safeMath";
 
 const StepOne = ({ setNext }: { setNext: (step: number) => void }) => {
   const { getUser, setUser } = useUserStore();
@@ -34,8 +35,8 @@ const StepOne = ({ setNext }: { setNext: (step: number) => void }) => {
       physicalDetials: {
         ...user?.physicalDetials,
         gender: gender,
-        height: Number(height),
-        weight: Number(weight),
+        height: protectFromNaN(height),
+        weight: protectFromNaN(weight),
       },
     });
     setNext(2);

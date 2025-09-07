@@ -1,9 +1,14 @@
 import { StatusBar, View } from "react-native";
 import CustomText from "../components/CustomText";
 import { useCheckUserLoggedIn } from "../hooks/useAuth";
+import { useEffect } from "react";
 
 export default function Index() {
-  const { isLoading } = useCheckUserLoggedIn();
+  const { checkAuthStatus, isLoading } = useCheckUserLoggedIn();
+
+  useEffect(() => {
+    checkAuthStatus();
+  }, []);
 
   return (
     <View

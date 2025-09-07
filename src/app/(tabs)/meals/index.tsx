@@ -45,12 +45,12 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
-    fontWeight: "regular",
+    fontFamily: "OutfitRegular",
     color: "#707070",
   },
   link: {
     fontSize: 12,
-    fontWeight: "regular",
+    fontFamily: "OutfitRegular",
   },
 });
 

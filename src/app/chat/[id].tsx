@@ -1,19 +1,19 @@
-import { View, SafeAreaView, StyleSheet, Pressable } from "react-native";
+import { View, StyleSheet, Pressable } from "react-native";
 import CustomText from "@/src/components/CustomText";
 import React from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Entypo, Ionicons } from "@expo/vector-icons";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const Chat = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
-  const insets = useSafeAreaInsets();
 
   const chatTitle = id === "new" ? "New Chat" : id;
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <Pressable onPress={() => router.back()}>
           <Ionicons name="chevron-back" size={20} color="black" />
@@ -23,16 +23,14 @@ const Chat = () => {
           <Entypo name="dots-three-vertical" size={20} color="black" />
         </Pressable>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 20,
-    paddingBottom: 20,
-    backgroundColor: "#fff",
+    padding: 10,
   },
   header: {
     flexDirection: "row",

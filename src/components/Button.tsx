@@ -4,10 +4,12 @@ import CustomText from "./CustomText";
 
 const Button = ({
   onPress,
+  size,
   children,
   disabled,
 }: {
   onPress: () => void;
+  size?: "small" | "medium" | "large";
   children: React.ReactNode;
   disabled?: boolean;
 }) => {
@@ -19,6 +21,9 @@ const Button = ({
         styles.button,
         pressed && styles.buttonPressed, // apply on press
         disabled && styles.buttonDisabled,
+        size === "small" && styles.buttonSmall,
+        size === "medium" && styles.buttonMedium,
+        size === "large" && styles.buttonLarge,
       ]}
     >
       <CustomText style={styles.buttonText}>{children}</CustomText>
@@ -47,6 +52,18 @@ const styles = StyleSheet.create({
   },
   buttonDisabled: {
     backgroundColor: "#2B2B2B",
+  },
+  buttonSmall: {
+    height: 40,
+    width: 100,
+  },
+  buttonMedium: {
+    height: 56,
+    width: "auto",
+  },
+  buttonLarge: {
+    height: 72,
+    width: "auto",
   },
 });
 

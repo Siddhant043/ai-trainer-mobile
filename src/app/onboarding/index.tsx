@@ -18,7 +18,7 @@ const Onboarding = () => {
   const router = useRouter();
 
   useEffect(() => {
-    if (user.isOnboarded) {
+    if (user.isOnboarded === true) {
       router.navigate("/(tabs)/home" as RelativePathString);
     }
   }, [user.isOnboarded]);
@@ -76,7 +76,6 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     flexDirection: "row",
-    width: "100%",
     justifyContent: "space-between",
     alignItems: "center",
     marginBottom: 10,

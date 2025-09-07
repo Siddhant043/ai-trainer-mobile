@@ -14,7 +14,7 @@ export default function RootLayout() {
         tabBarActiveTintColor: "#fff",
         tabBarInactiveTintColor: "#666666",
         tabBarStyle: {
-          height: "auto",
+          height: 90,
           paddingBottom: 30,
           paddingTop: 20,
           borderTopLeftRadius: 20,
@@ -23,7 +23,8 @@ export default function RootLayout() {
           overflow: "hidden",
           position: "absolute",
           bottom: 0,
-          left: "50%",
+          left: 0,
+          right: 0,
         },
         tabBarLabelStyle: {
           fontSize: 12,

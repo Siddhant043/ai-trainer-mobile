@@ -34,7 +34,6 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "column",
     alignItems: "flex-start",
-    width: "100%",
     marginVertical: 20,
   },
   label: {
@@ -43,7 +42,7 @@ const styles = StyleSheet.create({
     color: "#707070",
   },
   input: {
-    width: "100%",
+    flex: 1,
     height: 56,
     borderRadius: 8,
     paddingHorizontal: 10,
@@ -51,6 +50,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
     color: "#000",
     fontSize: 20,
+    width: "100%",
     fontFamily: "OutfitRegular",
   },
 });

@@ -173,7 +173,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "flex-start",
     gap: 20,
-    width: "100%",
   },
   macroItem: {
     flex: 1,

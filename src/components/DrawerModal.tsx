@@ -18,29 +18,31 @@ interface DrawerModalProps {
   onClose: () => void;
 }
 
-const { width: screenWidth } = Dimensions.get("window");
+const { width: screenWidth } = Dimensions.get("window") || { width: 375 };
 
 const DrawerModal: React.FC<DrawerModalProps> = ({ isOpen, onClose }) => {
   const { user } = useUserStore();
   const { logout } = useLogout();
-  const slideAnim = useRef(new Animated.Value(-screenWidth * 0.8)).current;
+  const slideAnim = useRef(
+    new Animated.Value(-(screenWidth || 375) * 0.8)
+  ).current;
   const [modalVisible, setModalVisible] = React.useState(false);
 
   useEffect(() => {
     if (isOpen) {
       setModalVisible(true);
       // Reset position first, then animate in
-      slideAnim.setValue(-screenWidth * 0.8);
+      slideAnim.setValue(-(screenWidth || 375) * 0.8);
       Animated.timing(slideAnim, {
         toValue: 0,
-        duration: 300,
+        duration: 200,
         useNativeDriver: true,
       }).start();
     } else {
       // Animate out first, then hide modal
       Animated.timing(slideAnim, {
         toValue: -screenWidth * 0.8,
-        duration: 300,
+        duration: 200,
         useNativeDriver: true,
       }).start(() => {
         setModalVisible(false);

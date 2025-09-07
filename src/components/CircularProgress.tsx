@@ -6,6 +6,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { useEffect } from "react";
+import { safeProgress } from "../utils/safeMath";
 
 const CIRCLE_LENGTH = 100;
 const CIRCLE_RADIUS = CIRCLE_LENGTH / (2 * Math.PI);
@@ -13,7 +14,10 @@ const CIRCLE_RADIUS = CIRCLE_LENGTH / (2 * Math.PI);
 const CIRCLE_FILL_COLOR = "#D6D6D6";
 const CIRCLE_STROKE_WIDTH = CIRCLE_LENGTH / 25;
 
-const { width, height } = Dimensions.get("window");
+const { width, height } = Dimensions.get("window") || {
+  width: 375,
+  height: 812,
+};
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
@@ -28,7 +32,8 @@ const CircularProgress = ({ progress, active }: CircularProgressProps) => {
   const activeColor = active ? "#FE5001" : "#000";
 
   useEffect(() => {
-    circleProgress.value = withTiming(progress, { duration: 2000 });
+    const safe = safeProgress(progress);
+    circleProgress.value = withTiming(safe, { duration: 2000 });
   }, [progress]);
 
   const animatedCircleProps = useAnimatedProps(() => ({
@@ -36,8 +41,8 @@ const CircularProgress = ({ progress, active }: CircularProgressProps) => {
   }));
 
   const circleCenter = {
-    x: (width / CIRCLE_LENGTH) * 10,
-    y: (height / CIRCLE_LENGTH) * 3,
+    x: ((width || 375) / CIRCLE_LENGTH) * 10,
+    y: ((height || 812) / CIRCLE_LENGTH) * 3,
   };
 
   return (

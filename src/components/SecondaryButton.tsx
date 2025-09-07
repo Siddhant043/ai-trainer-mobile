@@ -28,25 +28,27 @@ const SecondaryButton = ({
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: "#000",
+    backgroundColor: "#fff",
     padding: 10,
     borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#D6D6D6",
     height: 56,
     alignItems: "center",
     justifyContent: "center",
-    width: "100%",
+    flex: 1,
   },
   buttonPressed: {
-    backgroundColor: "#2B2B2B",
+    backgroundColor: "#f5f5f5",
   },
   buttonText: {
-    color: "#fff",
+    color: "#000",
     textAlign: "center",
-    fontFamily: "OutfitBold",
+    fontFamily: "OutfitSemiBold",
     fontSize: 16,
   },
   buttonDisabled: {
-    backgroundColor: "#2B2B2B",
+    backgroundColor: "#f5f5f5",
   },
 });
 

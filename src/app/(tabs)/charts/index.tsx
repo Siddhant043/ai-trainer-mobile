@@ -1,6 +1,7 @@
-import { View, Text, SafeAreaView } from "react-native";
+import { View, Text } from "react-native";
 import CustomText from "@/src/components/CustomText";
 import React from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const Charts = () => {
   return (

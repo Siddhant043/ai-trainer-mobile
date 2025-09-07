@@ -7,6 +7,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { useEffect } from "react";
+import { safeProgress } from "../utils/safeMath";
 
 const CIRCLE_LENGTH = 150; // circumference
 const CIRCLE_RADIUS = CIRCLE_LENGTH / (2 * Math.PI);
@@ -14,7 +15,10 @@ const CIRCLE_RADIUS = CIRCLE_LENGTH / (2 * Math.PI);
 const CIRCLE_FILL_COLOR = "#FFE4DB";
 const CIRCLE_STROKE_WIDTH = CIRCLE_LENGTH / 35;
 
-const { width, height } = Dimensions.get("window");
+const { width, height } = Dimensions.get("window") || {
+  width: 375,
+  height: 812,
+};
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
@@ -26,7 +30,8 @@ const CalorieBurnIcon = ({ progress = 0 }: CalorieBurnIconProps) => {
   const circleProgress = useSharedValue(0);
 
   useEffect(() => {
-    circleProgress.value = withTiming(progress, { duration: 2000 });
+    const safe = safeProgress(progress);
+    circleProgress.value = withTiming(safe, { duration: 2000 });
   }, [progress]);
 
   const animatedCircleProps = useAnimatedProps(() => ({
@@ -34,8 +39,8 @@ const CalorieBurnIcon = ({ progress = 0 }: CalorieBurnIconProps) => {
   }));
 
   const circleCenter = {
-    x: (width / CIRCLE_LENGTH) * 11,
-    y: (height / CIRCLE_LENGTH) * 5,
+    x: ((width || 375) / CIRCLE_LENGTH) * 11,
+    y: ((height || 812) / CIRCLE_LENGTH) * 5,
   };
 
   const iconSize = 24;

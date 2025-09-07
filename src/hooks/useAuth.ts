@@ -1,12 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { authAPI } from "../api";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useUserStore } from "../store";
 import * as SecureStore from "expo-secure-store";
-import { useUser } from "./useUser";
 import { RelativePathString, router, useRouter } from "expo-router";
 import storage from "../config/storage";
 import { User } from "../types";
+import { userAPI } from "../api/user";
 
 export const useLogin = () => {
   const {
@@ -33,8 +33,11 @@ export const useVerifyOtp = () => {
       setIsAuthenticated(true);
       SecureStore.setItemAsync("token", data.token);
       setUser(data.user);
+      storage.set("user", JSON.stringify(data.user));
+
+      // Navigate based on onboarding status
       data.user.isOnboarded
-        ? router.navigate("/login" as RelativePathString)
+        ? router.navigate("/(tabs)/home" as RelativePathString)
         : router.navigate("/onboarding" as RelativePathString);
     },
   });
@@ -43,59 +46,110 @@ export const useVerifyOtp = () => {
 
 export const useCheckUserLoggedIn = () => {
   const router = useRouter();
-  const { getCurrentUserQuery } = useUser();
-  const { setIsAuthenticated, setUser } = useUserStore();
+  const { setIsAuthenticated, setUser, user } = useUserStore();
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Query for fetching user from API (only when needed)
+  const getUserQuery = useQuery({
+    queryKey: ["current-user"],
+    queryFn: userAPI.getCurrentUser,
+    enabled: false,
+    retry: false,
+  });
 
   const checkAuthStatus = async () => {
     try {
+      setIsLoading(true);
+
+      // Step 1: Check if user exists in MMKV storage
+      const currentUser = storage.getString("user");
+      console.log("currentUser", currentUser);
+      if (currentUser) {
+        try {
+          const parsedUser = JSON.parse(currentUser) as User;
+          setUser(parsedUser);
+          setIsAuthenticated(true);
+
+          // Navigate based on onboarding status
+          if (parsedUser.isOnboarded) {
+            router.navigate("/(tabs)/home" as RelativePathString);
+          } else {
+            router.navigate("/onboarding" as RelativePathString);
+          }
+          setIsLoading(false);
+          return;
+        } catch (error) {
+          console.error("Error parsing stored user:", error);
+          storage.delete("user");
+          // Continue to check auth token
+        }
+      }
+
+      // Step 2: User not in storage, check if auth token exists
       const token = await SecureStore.getItemAsync("token");
       if (!token) {
         // No token found, redirect to login
+
         router.navigate("/login" as RelativePathString);
+        setIsLoading(false);
         return;
       }
 
-      // Token exists, check if user data is available
-      if (getCurrentUserQuery.data) {
-        setIsAuthenticated(true);
-        setUser(getCurrentUserQuery.data);
+      // Step 3: Token exists, fetch user details from API
+      const result = await getUserQuery.refetch();
 
-        // Check onboarding status
-        if (!getCurrentUserQuery.data.isOnboarded) {
-          router.navigate("/onboarding" as RelativePathString);
-        } else {
+      if (result.data) {
+        const userData = result.data;
+        setIsAuthenticated(true);
+        setUser(userData);
+        storage.set("user", JSON.stringify(userData));
+
+        // Navigate based on onboarding status
+        if (userData.isOnboarded) {
           router.navigate("/(tabs)/home" as RelativePathString);
+        } else {
+          router.navigate("/onboarding" as RelativePathString);
         }
-      } else if (getCurrentUserQuery.error) {
-        // Query failed, token might be invalid
-        console.error("User query failed:", getCurrentUserQuery.error);
+      } else {
+        // API call failed, token might be invalid
+        console.error("Failed to fetch user data");
         await SecureStore.deleteItemAsync("token");
+        storage.delete("user");
         router.navigate("/login" as RelativePathString);
       }
-      // If query is still loading, wait for it to complete
     } catch (error) {
       console.error("Error checking auth status:", error);
+      // Clean up invalid data
+      await SecureStore.deleteItemAsync("token");
+      storage.delete("user");
       router.navigate("/login" as RelativePathString);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  // Automatically check auth status when query completes
-  useEffect(() => {
-    if (getCurrentUserQuery.data || getCurrentUserQuery.error) {
-      checkAuthStatus();
-    }
-  }, [getCurrentUserQuery.data, getCurrentUserQuery.error]);
-
-  return { checkAuthStatus, isLoading: getCurrentUserQuery.isLoading };
+  return {
+    checkAuthStatus,
+    isLoading: isLoading || getUserQuery.isFetching,
+  };
 };
 
 export const useLogout = () => {
   const { setIsAuthenticated, setUser } = useUserStore();
+
   const logout = async () => {
-    await SecureStore.deleteItemAsync("token");
-    setIsAuthenticated(false);
-    setUser({} as User);
-    router.navigate("/login" as any);
+    try {
+      await SecureStore.deleteItemAsync("token");
+      storage.delete("user");
+      setIsAuthenticated(false);
+      setUser({} as User);
+      router.navigate("/login" as RelativePathString);
+    } catch (error) {
+      console.error("Error during logout:", error);
+      // Still navigate to login even if cleanup fails
+      router.navigate("/login" as RelativePathString);
+    }
   };
+
   return { logout };
 };
