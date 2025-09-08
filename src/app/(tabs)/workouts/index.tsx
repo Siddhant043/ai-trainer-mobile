@@ -3,16 +3,20 @@ import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
-import SplitCard from "@/src/components/SplitCard";
+import ScheduleCard from "@/src/components/ScheduleCard";
 import SecondaryButton from "@/src/components/SecondaryButton";
 
 const Workouts = () => {
   const router = useRouter();
 
+  const handleWorkoutSplits = () => {
+    router.navigate("/(tabs)/workouts/splits");
+  };
+
   const handleCheckHistory = () => {
     router.navigate("/(tabs)/home");
   };
-  const scheduleDetails = {
+  const currentScheduleDetails = {
     name: "Back and Biceps",
     exercises: [
       "Pull Ups",
@@ -25,6 +29,35 @@ const Workouts = () => {
       "Hammer Curls",
     ],
   };
+
+  const otherSchedules = [
+    {
+      name: "Chest and Triceps",
+      exercises: [
+        "Bench Press",
+        "Incline Bench Press",
+        "Decline Bench Press",
+        "Push Ups",
+        "Tricep Pushdowns",
+        "Tricep Extensions",
+        "Tricep Pushdowns",
+      ],
+    },
+    {
+      name: "Legs and Shoulders",
+      exercises: [
+        "Squats",
+        "Leg Press",
+        "Leg Extension",
+        "Leg Curl",
+        "Calf Raises",
+        "Shoulder Press",
+        "Lateral Raises",
+        "Front Raises",
+        "Reverse Flys",
+      ],
+    },
+  ];
 
   return (
     <SafeAreaView style={styles.container}>
@@ -44,11 +77,18 @@ const Workouts = () => {
               2-muscle/day
             </CustomText>
           </View>
-          <SplitCard scheduleDetails={scheduleDetails} />
-          <SecondaryButton onPress={() => {}}>
-            Change Workout Splits
-          </SecondaryButton>
+          <ScheduleCard
+            scheduleDetails={currentScheduleDetails}
+            isCardOpen={true}
+          />
+
+          {otherSchedules.map((schedule) => (
+            <ScheduleCard key={schedule.name} scheduleDetails={schedule} />
+          ))}
         </View>
+        <SecondaryButton onPress={handleWorkoutSplits}>
+          Workout Splits
+        </SecondaryButton>
       </ScrollView>
     </SafeAreaView>
   );
@@ -58,6 +98,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 10,
+    backgroundColor: "#f9f6f6",
   },
   header: {
     flexDirection: "row",
@@ -78,6 +119,7 @@ const styles = StyleSheet.create({
     marginTop: 40,
     flexDirection: "column",
     gap: 10,
+    marginBottom: 20,
   },
   activeSplitTextValueContainer: {
     flexDirection: "row",

@@ -78,6 +78,30 @@ export default function RootLayout() {
           href: null,
         }}
       />
+      <Tabs.Screen
+        name="workouts/splits"
+        options={{
+          href: null,
+        }}
+      />
+      <Tabs.Screen
+        name="workouts/createSplit"
+        options={{
+          href: null,
+        }}
+      />
+      <Tabs.Screen
+        name="workouts/createSchedule"
+        options={{
+          href: null,
+        }}
+      />
+      <Tabs.Screen
+        name="workouts/selectExercises"
+        options={{
+          href: null,
+        }}
+      />
     </Tabs>
   );
 }

@@ -1,117 +1,109 @@
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Pressable,
+} from "react-native";
 import React, { useState } from "react";
 import CustomText from "./CustomText";
-import Button from "./Button";
 import { Ionicons } from "@expo/vector-icons";
+import Button from "./Button";
 
 const SplitCard = ({
-  scheduleDetails,
+  isCardOpen = false,
+  splitDetails,
 }: {
-  scheduleDetails: { name: string; exercises: string[] };
+  isCardOpen?: boolean;
+  splitDetails: { name: string; schedules: string[]; isActive: boolean };
 }) => {
-  // Split exercises into two columns
-  const leftColumn = scheduleDetails.exercises.slice(
-    0,
-    scheduleDetails.exercises.length / 2
-  );
-  const rightColumn = scheduleDetails.exercises.slice(
-    scheduleDetails.exercises.length / 2
-  );
-
-  const [isExpanded, setIsExpanded] = useState(false);
-
+  const [open, setOpen] = useState(isCardOpen);
   return (
     <View style={styles.container}>
-      <View style={styles.titleContainer}>
-        <CustomText style={styles.title}>{scheduleDetails.name}</CustomText>
-        <TouchableOpacity
-          activeOpacity={1}
-          onPress={() => setIsExpanded(!isExpanded)}
-        >
+      <View style={styles.headerContainer}>
+        <CustomText style={styles.title}>{splitDetails.name}</CustomText>
+        <TouchableOpacity activeOpacity={0.8} onPress={() => setOpen(!open)}>
           <Ionicons
-            name={isExpanded ? "chevron-up" : "chevron-down"}
-            size={24}
+            name={open ? "chevron-up" : "chevron-down"}
+            size={20}
             color="#707070"
           />
         </TouchableOpacity>
       </View>
 
-      <View
-        style={[styles.exercisesContainer, !isExpanded && { display: "none" }]}
-      >
-        <View style={styles.column}>
-          {leftColumn.map((exercise, index) => (
-            <View key={index} style={styles.exerciseRow}>
-              <View style={styles.bullet} />
-              <CustomText style={styles.exercise}>{exercise}</CustomText>
-            </View>
-          ))}
-        </View>
+      {open && (
+        <>
+          <View style={styles.exercisesContainer}>
+            {splitDetails.schedules.map((schedule, index) => (
+              <View style={styles.exerciseContainer} key={index * 2}>
+                <Ionicons name="ellipse" size={6} color="#707070" />
+                <CustomText style={styles.exercise}>{schedule}</CustomText>
+              </View>
+            ))}
+          </View>
 
-        <View style={styles.column}>
-          {rightColumn.map((exercise, index) => (
-            <View key={index + 4} style={styles.exerciseRow}>
-              <View style={styles.bullet} />
-              <CustomText style={styles.exercise}>{exercise}</CustomText>
-            </View>
-          ))}
-        </View>
-      </View>
-      <View
-        style={[styles.buttonContainer, !isExpanded && { display: "none" }]}
-      >
-        <Button onPress={() => {}}>Start</Button>
-      </View>
+          <View style={styles.bottomContainer}>
+            <Pressable onPress={() => {}}>
+              <CustomText style={styles.viewMore}>View More</CustomText>
+            </Pressable>
+            {!splitDetails.isActive ? (
+              <Button onPress={() => {}} size="small">
+                Activate
+              </Button>
+            ) : (
+              <CustomText style={styles.active}>Active</CustomText>
+            )}
+          </View>
+        </>
+      )}
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
-    borderRadius: 12,
-    padding: 16,
+    flexDirection: "column",
     backgroundColor: "#fff",
+    padding: 16,
+    borderRadius: 10,
+    gap: 10,
   },
-  titleContainer: {
+  headerContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
   },
   title: {
     fontSize: 20,
-    fontFamily: "OutfitRegular",
-    color: "#000",
+    color: "#707070",
   },
-  buttonContainer: {
-    marginTop: 20,
-  },
-
   exercisesContainer: {
-    marginTop: 40,
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: "column",
+    marginTop: 10,
+    gap: 10,
   },
-  column: {
-    flex: 1,
-    paddingRight: 10,
-  },
-  exerciseRow: {
+  exerciseContainer: {
     flexDirection: "row",
+    justifyContent: "flex-start",
     alignItems: "center",
-    marginBottom: 8,
-  },
-  bullet: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: "#707070",
-    marginRight: 12,
+    gap: 10,
   },
   exercise: {
     fontSize: 16,
     color: "#707070",
-    fontFamily: "OutfitRegular",
-    flex: 1,
+  },
+  bottomContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: 10,
+  },
+  viewMore: {
+    fontSize: 16,
+  },
+  active: {
+    fontSize: 16,
+    color: "#19CE1F",
+    fontFamily: "OutfitSemiBold",
   },
 });
 

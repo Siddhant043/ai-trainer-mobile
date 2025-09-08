@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   buttonPressed: {
-    backgroundColor: "#f5f5f5",
+    opacity: 0.8,
   },
   buttonText: {
     color: "#000",
