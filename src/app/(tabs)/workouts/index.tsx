@@ -1,10 +1,21 @@
 import CustomText from "@/src/components/CustomText";
-import { Pressable, ScrollView, StyleSheet, View } from "react-native";
-import React from "react";
+import {
+  Modal,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  View,
+  TouchableWithoutFeedback,
+  Dimensions,
+} from "react-native";
+import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import ScheduleCard from "@/src/components/ScheduleCard";
 import SecondaryButton from "@/src/components/SecondaryButton";
+import Button from "@/src/components/Button";
+import SelectExercisesChild from "@/src/components/SelectExercisesChild";
+const { height: screenHeight } = Dimensions.get("window");
 
 const Workouts = () => {
   const router = useRouter();
@@ -15,6 +26,9 @@ const Workouts = () => {
 
   const handleCheckHistory = () => {
     router.navigate("/(tabs)/home");
+  };
+  const handleShowExercises = () => {
+    router.navigate("/(tabs)/workouts/checkExercises");
   };
   const currentScheduleDetails = {
     name: "Back and Biceps",
@@ -60,37 +74,42 @@ const Workouts = () => {
   ];
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={styles.header}>
-          <CustomText style={styles.title}>Your Workouts</CustomText>
-          <Pressable onPress={handleCheckHistory}>
-            <CustomText style={styles.link}>Check History</CustomText>
-          </Pressable>
-        </View>
-        <View style={styles.activeSplitContainer}>
-          <View style={styles.activeSplitTextValueContainer}>
-            <CustomText style={styles.activeSplitTextValueTitle}>
-              Active Split:
-            </CustomText>
-            <CustomText style={styles.activeSplitTextValueName}>
-              2-muscle/day
-            </CustomText>
+    <>
+      <SafeAreaView style={styles.container}>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <View style={styles.header}>
+            <CustomText style={styles.title}>Your Workouts</CustomText>
+            <Pressable onPress={handleCheckHistory}>
+              <CustomText style={styles.link}>Check History</CustomText>
+            </Pressable>
           </View>
-          <ScheduleCard
-            scheduleDetails={currentScheduleDetails}
-            isCardOpen={true}
-          />
+          <View style={styles.activeSplitContainer}>
+            <View style={styles.activeSplitTextValueContainer}>
+              <CustomText style={styles.activeSplitTextValueTitle}>
+                Active Workout Split:
+              </CustomText>
+              <CustomText style={styles.activeSplitTextValueName}>
+                2-muscle/day
+              </CustomText>
+            </View>
+            <ScheduleCard
+              scheduleDetails={currentScheduleDetails}
+              isCardOpen={true}
+            />
 
-          {otherSchedules.map((schedule) => (
-            <ScheduleCard key={schedule.name} scheduleDetails={schedule} />
-          ))}
-        </View>
-        <SecondaryButton onPress={handleWorkoutSplits}>
-          Workout Splits
-        </SecondaryButton>
-      </ScrollView>
-    </SafeAreaView>
+            {otherSchedules.map((schedule) => (
+              <ScheduleCard key={schedule.name} scheduleDetails={schedule} />
+            ))}
+          </View>
+          <View style={styles.buttonsContainer}>
+            <SecondaryButton onPress={handleWorkoutSplits}>
+              Workout Splits
+            </SecondaryButton>
+            <Button onPress={handleShowExercises}>Show Exercises</Button>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    </>
   );
 };
 
@@ -142,6 +161,10 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontFamily: "OutfitRegular",
     color: "#707070",
+  },
+  buttonsContainer: {
+    flexDirection: "column",
+    gap: 10,
   },
 });
 

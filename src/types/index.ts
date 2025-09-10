@@ -1,4 +1,16 @@
+import Exercise from "./exercise";
+
 export { default as User } from "./userTypes";
+export { default as Exercise } from "./exercise";
+export { default as Workout } from "./workout";
+
+// API Response Types
+export interface ExercisesResponse {
+  total: number;
+  page: number;
+  pages: number;
+  exercises: Exercise[];
+}
 
 export type STATE =
   | "andaman-and-nicobar-islands"

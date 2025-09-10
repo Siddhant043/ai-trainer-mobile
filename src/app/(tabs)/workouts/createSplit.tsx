@@ -47,11 +47,11 @@ const CreateSplit = () => {
         <TouchableOpacity activeOpacity={0.8} onPress={handleBackPress}>
           <Ionicons name="chevron-back" size={20} color="black" />
         </TouchableOpacity>
-        <CustomText style={styles.title}>Create Split</CustomText>
+        <CustomText style={styles.title}>Create Workout Split</CustomText>
       </View>
       <View style={styles.sliptFormContainer}>
         <CustomTextInput
-          label="Split Name"
+          label="Workout Split Name"
           placeholder="Enter split name"
           value={splitName}
           handleValueChange={setSplitName}
@@ -72,7 +72,7 @@ const CreateSplit = () => {
         />
         {error && <CustomText style={styles.error}>{error}</CustomText>}
         <View style={styles.buttonContainer}>
-          <Button onPress={handleNext}>Next</Button>
+          <Button onPress={handleNext}>Create Split</Button>
         </View>
       </View>
     </SafeAreaView>

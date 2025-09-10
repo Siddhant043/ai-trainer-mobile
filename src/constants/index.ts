@@ -204,3 +204,87 @@ export const STATES_MAP: { value: STATE; label: string }[] = [
 ];
 
 export const EMAIL_REGEX_STRICT = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+
+export const BODY_PARTS = [
+  "waist",
+  "back",
+  "chest",
+  "upper legs",
+  "upper arms",
+  "shoulders",
+  "lower arms",
+  "lower legs",
+  "cardio",
+  "neck",
+];
+
+export const EQUIPMENTS = [
+  "body weight",
+  "cable",
+  "leverage machine",
+  "assisted",
+  "medicine ball",
+  "assisted (towel)",
+  "barbell",
+  "rope",
+  "stability ball",
+  "dumbbell",
+  "ez barbell",
+  "kettlebell",
+  "body weight (with resistance band)",
+  "olympic barbell",
+  "weighted",
+  "bosu ball",
+  "sled machine",
+  "smith machine",
+  "wheel roller",
+  "trap bar",
+  "band",
+  "dumbbell (used as handles for deeper range)",
+  "dumbbell, exercise ball",
+  "hammer",
+  "ez barbell, exercise ball",
+  "stationary bike",
+  "upper body ergometer",
+  "elliptical machine",
+  "skierg machine",
+  "roller",
+  "stepmill machine",
+  "tire",
+  "resistance band",
+  "dumbbell, exercise ball, tennis ball",
+];
+
+export const TARGETS = [
+  "abs",
+  "lats",
+  "pectorals",
+  "hamstrings",
+  "triceps",
+  "quads",
+  "biceps",
+  "upper back",
+  "glutes",
+  "delts",
+  "serratus anterior",
+  "forearms",
+  "calves",
+  "traps",
+  "adductors",
+  "spine",
+  "cardiovascular system",
+  "abductors",
+  "levator scapulae",
+];
+
+export const CATEGORY = [
+  "strength",
+  "balance",
+  "plyometrics",
+  "cardio",
+  "rehabilitation",
+  "mobility",
+  "stretching",
+];
+
+export const DIFFICULTY = ["beginner", "intermediate", "advanced"];

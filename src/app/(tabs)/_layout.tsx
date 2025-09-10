@@ -102,6 +102,12 @@ export default function RootLayout() {
           href: null,
         }}
       />
+      <Tabs.Screen
+        name="workouts/checkExercises"
+        options={{
+          href: null,
+        }}
+      />
     </Tabs>
   );
 }

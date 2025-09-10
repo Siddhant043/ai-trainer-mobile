@@ -1,21 +1,36 @@
 import { Text, StyleSheet, View, TouchableOpacity } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import CustomText from "@/src/components/CustomText";
+import SelectExercisesChild from "@/src/components/SelectExercisesChild";
+import Button from "@/src/components/Button";
 
 const SelectExercises = () => {
   const router = useRouter();
+  const [selectedExercises, setSelectedExercises] = useState<string[]>([]);
+  const handleNext = () => {
+    console.log("selectedExercises", selectedExercises);
+  };
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()}>
-          <Ionicons name="chevron-back" size={24} color="black" />
-        </TouchableOpacity>
-        <CustomText style={styles.title}>Select Exercises</CustomText>
+        <View style={styles.headerTitle}>
+          <TouchableOpacity onPress={() => router.back()}>
+            <Ionicons name="chevron-back" size={24} color="black" />
+          </TouchableOpacity>
+          <CustomText style={styles.title}>Select Exercises</CustomText>
+        </View>
+        <Button size="small" onPress={handleNext}>
+          Next
+        </Button>
       </View>
-      <View style={styles.exercisesContainer}></View>
+      <SelectExercisesChild
+        selectedExercises={selectedExercises}
+        setSelectedExercises={setSelectedExercises}
+        isSelectable={true}
+      />
     </SafeAreaView>
   );
 };
@@ -29,15 +44,17 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
+  },
+  headerTitle: {
+    flexDirection: "row",
+    alignItems: "center",
     justifyContent: "flex-start",
     gap: 10,
   },
   title: {
     fontSize: 20,
     color: "#707070",
-  },
-  exercisesContainer: {
-    flex: 1,
   },
 });
 

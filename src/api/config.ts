@@ -40,3 +40,4 @@ export default api;
 
 // Export env variables
 export const USER_MS_URL = process.env.EXPO_PUBLIC_USER_MS_URL;
+export const WORKOUT_MS_URL = process.env.EXPO_PUBLIC_WORKOUT_MS_URL;
