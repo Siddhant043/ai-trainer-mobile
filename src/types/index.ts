@@ -3,6 +3,7 @@ import Exercise from "./exercise";
 export { default as User } from "./userTypes";
 export { default as Exercise } from "./exercise";
 export { default as Workout } from "./workout";
+export { default as Schedule } from "./schedule";
 
 // API Response Types
 export interface ExercisesResponse {

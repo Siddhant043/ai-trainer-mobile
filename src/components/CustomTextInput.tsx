@@ -3,6 +3,7 @@ import {
   StyleSheet,
   TextInput,
   KeyboardTypeOptions,
+  Keyboard,
   Platform,
 } from "react-native";
 import React, { useCallback, useRef, useState, useEffect, memo } from "react";
@@ -82,6 +83,9 @@ const CustomTextInput = ({
         selectTextOnFocus={false}
         // Disable smart features that can interfere with keyboard sessions
         smartInsertDelete={false}
+        onSubmitEditing={() => {
+          Keyboard.dismiss();
+        }}
         // Platform-specific optimizations
         {...(Platform.OS === "ios" && {
           textContentType: "none",

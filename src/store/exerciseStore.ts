@@ -29,7 +29,7 @@ interface ExerciseStore {
   resetPagination: () => void;
 }
 
-export const useExerciseStore = create<ExerciseStore>((set) => ({
+const useExerciseStore = create<ExerciseStore>((set) => ({
   exercises: [],
   currentPage: 1,
   totalPages: 1,
@@ -63,3 +63,4 @@ export const useExerciseStore = create<ExerciseStore>((set) => ({
       hasMore: false,
     }),
 }));
+export default useExerciseStore;

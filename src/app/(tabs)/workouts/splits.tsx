@@ -1,43 +1,23 @@
-import React from "react";
+import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import CustomText from "@/src/components/CustomText";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import Button from "@/src/components/Button";
 import SplitCard from "@/src/components/SplitCard";
+import { useGetWorkouts } from "@/src/hooks/useWorkout";
+import { Workout } from "@/src/types";
+import CreateWorkoutSplitModal from "@/src/components/CreateWorkoutSplitModal";
 
 const Splits = () => {
   const router = useRouter();
-  const recommendedSplits = [
-    {
-      id: 1,
-      name: "2-muscle/day",
-      schedules: ["Chest and Triceps", "Back and Biceps", "Legs and Shoulders"],
-      isActive: true,
-    },
-    {
-      id: 2,
-      name: "Split 2",
-      schedules: ["Schedule 1", "Schedule 2", "Schedule 3", "Schedule 4"],
-      isActive: false,
-    },
-  ];
+  const { workouts } = useGetWorkouts();
+  const [isCreateWorkoutSplitModalOpen, setIsCreateWorkoutSplitModalOpen] =
+    useState(false);
+  const recommendedSplits = workouts?.filter((split) => !split.isCustom) || [];
+  const customSplits = workouts?.filter((split) => split.isCustom) || [];
 
-  const customSplits = [
-    {
-      id: 3,
-      name: "Split 3",
-      schedules: ["Schedule 1", "Schedule 2", "Schedule 3", "Schedule 4"],
-      isActive: false,
-    },
-    {
-      id: 4,
-      name: "Split 4",
-      schedules: ["Schedule 1", "Schedule 2", "Schedule 3", "Schedule 4"],
-      isActive: false,
-    },
-  ];
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -50,29 +30,52 @@ const Splits = () => {
         <CustomText style={styles.title}>Workout Splits</CustomText>
       </View>
 
-      <View style={styles.recommendedSplitsContainer}>
-        <CustomText style={styles.recommendedSplitsTitle}>
-          Recommneded Splits
-        </CustomText>
-        {recommendedSplits.map((split, index) => (
-          <SplitCard
-            key={split.id}
-            isCardOpen={index === 0 ? true : false}
-            splitDetails={split}
-          />
-        ))}
-      </View>
-      <View style={styles.buttonContainer}>
-        <Button onPress={() => router.push("/workouts/createSplit")}>
-          Create New Split
-        </Button>
-      </View>
-      <View style={styles.customSplitsContainer}>
-        <CustomText style={styles.customSplitsTitle}>Custom Splits</CustomText>
-        {customSplits.map((split) => (
-          <SplitCard key={split.id} isCardOpen={false} splitDetails={split} />
-        ))}
-      </View>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View style={styles.buttonContainer}>
+          <Button onPress={() => setIsCreateWorkoutSplitModalOpen(true)}>
+            Create New Split
+          </Button>
+        </View>
+
+        <View style={styles.recommendedSplitsContainer}>
+          <CustomText style={styles.recommendedSplitsTitle}>
+            Recommneded Splits
+          </CustomText>
+          {recommendedSplits.length > 0 ? (
+            recommendedSplits.map((split, index) => (
+              <SplitCard
+                key={split._id}
+                isCardOpen={false}
+                splitDetails={split}
+              />
+            ))
+          ) : (
+            <CustomText>No recommended splits found</CustomText>
+          )}
+        </View>
+
+        <View style={styles.customSplitsContainer}>
+          <CustomText style={styles.customSplitsTitle}>
+            Custom Splits
+          </CustomText>
+          {customSplits.length > 0 ? (
+            customSplits.map((split: Workout) => (
+              <SplitCard
+                key={split._id}
+                isCardOpen={false}
+                splitDetails={split}
+              />
+            ))
+          ) : (
+            <CustomText>No custom splits found</CustomText>
+          )}
+        </View>
+      </ScrollView>
+
+      <CreateWorkoutSplitModal
+        isOpen={isCreateWorkoutSplitModalOpen}
+        onClose={() => setIsCreateWorkoutSplitModalOpen(false)}
+      />
     </SafeAreaView>
   );
 };
@@ -95,7 +98,6 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     marginTop: 30,
-    marginBottom: 20,
   },
   recommendedSplitsContainer: {
     marginTop: 20,
@@ -110,6 +112,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     flexDirection: "column",
     gap: 10,
+    marginBottom: 70,
   },
   customSplitsTitle: {
     fontSize: 20,

@@ -25,12 +25,31 @@ export const workoutAPI = {
     return response.data;
   },
 
-  createWorkout: async (workout: Workout) => {
-    const response = await api.post(`${WORKOUT_MS_URL}/workouts`, workout);
+  createWorkout: async (workout: Partial<Workout>) => {
+    const response = await api.post(`${WORKOUT_MS_URL}/workouts`, {
+      ...workout,
+      isCustom: true,
+    });
+    return response.data.workout;
+  },
+
+  getWorkouts: async () => {
+    const response = await api.get(`${WORKOUT_MS_URL}/workouts/user`);
+    return response.data.workouts;
+  },
+
+  deleteWorkout: async (workoutId: string) => {
+    const response = await api.delete(
+      `${WORKOUT_MS_URL}/workouts/${workoutId}`
+    );
     return response.data;
   },
-  getWorkouts: async () => {
-    const response = await api.get(`${WORKOUT_MS_URL}/workouts`);
+
+  updateWorkout: async (workoutId: string, workout: Partial<Workout>) => {
+    const response = await api.patch(
+      `${WORKOUT_MS_URL}/workouts/${workoutId}`,
+      workout
+    );
     return response.data;
   },
 };

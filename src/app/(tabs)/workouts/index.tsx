@@ -14,8 +14,6 @@ import { useRouter } from "expo-router";
 import ScheduleCard from "@/src/components/ScheduleCard";
 import SecondaryButton from "@/src/components/SecondaryButton";
 import Button from "@/src/components/Button";
-import SelectExercisesChild from "@/src/components/SelectExercisesChild";
-const { height: screenHeight } = Dimensions.get("window");
 
 const Workouts = () => {
   const router = useRouter();
@@ -31,44 +29,53 @@ const Workouts = () => {
     router.navigate("/(tabs)/workouts/checkExercises");
   };
   const currentScheduleDetails = {
+    _id: "1",
     name: "Back and Biceps",
+    description: "This is a description of the workout split",
+    days: ["Monday", "Wednesday", "Friday"],
     exercises: [
-      "Pull Ups",
-      "Lat Pull Down",
-      "Close Grip Lat Pull Down",
-      "Seated Cable Rows",
-      "Dumbbell Rows",
-      "T Bar Rows",
-      "Inclined Dumbbell Curls",
-      "Hammer Curls",
+      { exerciseName: "Pull Ups" },
+      { exerciseName: "Lat Pull Down" },
+      { exerciseName: "Close Grip Lat Pull Down" },
+      { exerciseName: "Seated Cable Rows" },
+      { exerciseName: "Dumbbell Rows" },
+      { exerciseName: "T Bar Rows" },
+      { exerciseName: "Inclined Dumbbell Curls" },
+      { exerciseName: "Hammer Curls" },
     ],
   };
 
   const otherSchedules = [
     {
+      _id: "2",
       name: "Chest and Triceps",
+      description: "This is a description of the workout split",
+      days: ["Monday", "Wednesday", "Friday"],
       exercises: [
-        "Bench Press",
-        "Incline Bench Press",
-        "Decline Bench Press",
-        "Push Ups",
-        "Tricep Pushdowns",
-        "Tricep Extensions",
-        "Tricep Pushdowns",
+        { exerciseName: "Bench Press" },
+        { exerciseName: "Incline Bench Press" },
+        { exerciseName: "Decline Bench Press" },
+        { exerciseName: "Push Ups" },
+        { exerciseName: "Tricep Pushdowns" },
+        { exerciseName: "Tricep Extensions" },
+        { exerciseName: "Tricep Pushdowns" },
       ],
     },
     {
+      _id: "3",
       name: "Legs and Shoulders",
+      description: "This is a description of the workout split",
+      days: ["Monday", "Wednesday", "Friday"],
       exercises: [
-        "Squats",
-        "Leg Press",
-        "Leg Extension",
-        "Leg Curl",
-        "Calf Raises",
-        "Shoulder Press",
-        "Lateral Raises",
-        "Front Raises",
-        "Reverse Flys",
+        { exerciseName: "Squats" },
+        { exerciseName: "Leg Press" },
+        { exerciseName: "Leg Extension" },
+        { exerciseName: "Leg Curl" },
+        { exerciseName: "Calf Raises" },
+        { exerciseName: "Shoulder Press" },
+        { exerciseName: "Lateral Raises" },
+        { exerciseName: "Front Raises" },
+        { exerciseName: "Reverse Flys" },
       ],
     },
   ];
@@ -95,10 +102,15 @@ const Workouts = () => {
             <ScheduleCard
               scheduleDetails={currentScheduleDetails}
               isCardOpen={true}
+              isActivityCard={true}
             />
 
             {otherSchedules.map((schedule) => (
-              <ScheduleCard key={schedule.name} scheduleDetails={schedule} />
+              <ScheduleCard
+                key={schedule.name}
+                scheduleDetails={schedule}
+                isActivityCard={true}
+              />
             ))}
           </View>
           <View style={styles.buttonsContainer}>

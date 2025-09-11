@@ -31,7 +31,7 @@ export const useVerifyOtp = () => {
       authAPI.verify(email, otp),
     onSuccess: (data) => {
       setIsAuthenticated(true);
-      SecureStore.setItemAsync("token", data.token);
+      storage.set("token", data.token);
       setUser(data.user);
       storage.set("user", JSON.stringify(data.user));
 
@@ -60,8 +60,18 @@ export const useCheckUserLoggedIn = () => {
   const checkAuthStatus = async () => {
     try {
       setIsLoading(true);
+      // Step 1: User not in storage, check if auth token exists
+      const token = storage.getString("token");
+      console.log("token", token);
+      if (!token) {
+        // No token found, redirect to login
 
-      // Step 1: Check if user exists in MMKV storage
+        router.navigate("/login" as RelativePathString);
+        setIsLoading(false);
+        return;
+      }
+
+      // Step 2: Check if user exists in MMKV storage
       const currentUser = storage.getString("user");
       console.log("currentUser", currentUser);
       if (currentUser) {
@@ -83,16 +93,6 @@ export const useCheckUserLoggedIn = () => {
           storage.delete("user");
           // Continue to check auth token
         }
-      }
-
-      // Step 2: User not in storage, check if auth token exists
-      const token = await SecureStore.getItemAsync("token");
-      if (!token) {
-        // No token found, redirect to login
-
-        router.navigate("/login" as RelativePathString);
-        setIsLoading(false);
-        return;
       }
 
       // Step 3: Token exists, fetch user details from API

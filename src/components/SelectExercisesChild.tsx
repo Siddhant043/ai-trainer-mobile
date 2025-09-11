@@ -12,7 +12,7 @@ import { useGetExercises, useDebounce } from "../hooks";
 import { FlashList } from "@shopify/flash-list";
 import { Exercise, ExercisesResponse } from "../types";
 import ExerciseCard from "./ExerciseCard";
-import { useExerciseStore } from "../store/exerciseStore";
+import { useExerciseStore } from "../store";
 import { BODY_PARTS, CATEGORY, EQUIPMENTS, TARGETS } from "../constants";
 import CompactFilter from "./CompactFilter";
 
@@ -21,8 +21,8 @@ const SelectExercisesChild = ({
   setSelectedExercises = () => {},
   isSelectable = false,
 }: {
-  selectedExercises?: string[];
-  setSelectedExercises?: (exercises: string[]) => void;
+  selectedExercises?: Exercise[];
+  setSelectedExercises?: (exercises: Exercise[]) => void;
   isSelectable?: boolean;
 }) => {
   // Local state for search input and filters

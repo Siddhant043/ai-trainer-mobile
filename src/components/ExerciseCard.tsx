@@ -13,8 +13,8 @@ const ExerciseCard = ({
 }: {
   exercise: Exercise;
   isSelectable: boolean;
-  setSelectedExercises: (exercises: string[]) => void;
-  selectedExercises: string[];
+  setSelectedExercises: (exercises: Exercise[]) => void;
+  selectedExercises: Exercise[];
 }) => {
   const [visible, setVisible] = useState(false);
   const onRequestClose = () => setVisible(false);
@@ -27,7 +27,12 @@ const ExerciseCard = ({
           style={styles.defaultContainer}
           onPress={() => setVisible(true)}
         >
-          <Image source={{ uri: exercise.imageUrl[0] }} style={styles.image} />
+          {exercise.imageUrl.length > 0 && (
+            <Image
+              source={{ uri: exercise.imageUrl[0] }}
+              style={styles.image}
+            />
+          )}
           <CustomText style={styles.text}>{exercise.exerciseName}</CustomText>
         </TouchableOpacity>
         <ExerciseDetailsModal
@@ -40,7 +45,9 @@ const ExerciseCard = ({
   }
 
   // ✅ derive selection directly from props
-  const isSelected = selectedExercises.includes(String(exercise._id));
+  const isSelected = selectedExercises
+    .map((exercise) => exercise._id)
+    .includes(String(exercise._id));
 
   return (
     <>
@@ -56,7 +63,9 @@ const ExerciseCard = ({
           <TouchableOpacity
             onPress={() =>
               setSelectedExercises(
-                selectedExercises.filter((id) => id !== String(exercise._id))
+                selectedExercises.filter(
+                  (exercise) => exercise._id !== exercise._id
+                )
               )
             }
           >
@@ -66,7 +75,7 @@ const ExerciseCard = ({
           <Button
             size="small"
             onPress={() =>
-              setSelectedExercises([...selectedExercises, String(exercise._id)])
+              setSelectedExercises([...selectedExercises, exercise])
             }
           >
             Add

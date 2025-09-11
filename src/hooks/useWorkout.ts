@@ -1,7 +1,9 @@
 // hooks/useWorkout.ts
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { workoutAPI } from "../api/workout";
-import { ExercisesResponse } from "../types";
+import { ExercisesResponse, Workout } from "../types";
+import useWorkoutStore from "../store/workoutStore";
+import { useEffect } from "react";
 
 export const useGetExercises = (
   name = "",
@@ -47,4 +49,113 @@ export const useGetExercises = (
     invalidateQueries: () =>
       queryClient.invalidateQueries({ queryKey: ["exercises"] }),
   };
+};
+
+export const useGetWorkouts = () => {
+  const { setWorkouts } = useWorkoutStore();
+  const {
+    data: workouts,
+    isPending,
+    error,
+  } = useQuery<Workout[]>({
+    queryKey: ["workouts"],
+    queryFn: workoutAPI.getWorkouts,
+  });
+  useEffect(() => {
+    if (workouts) {
+      setWorkouts(workouts);
+    }
+  }, [workouts]);
+  return {
+    workouts,
+    isPending,
+    error,
+  };
+};
+
+export const useCreateWorkout = () => {
+  const queryClient = useQueryClient();
+  const { workouts, setWorkouts } = useWorkoutStore();
+  const {
+    mutateAsync: createWorkout, // 👈 use mutateAsync instead of mutate
+    data: createWorkoutData,
+    isPending,
+    error,
+  } = useMutation({
+    mutationFn: ({
+      name,
+      description,
+      workoutDays,
+    }: {
+      name: string;
+      description: string;
+      workoutDays: string[];
+    }) => workoutAPI.createWorkout({ name, description, workoutDays }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["creation-workout"] });
+      queryClient.invalidateQueries({ queryKey: ["workouts"] });
+      setWorkouts([...workouts, data]);
+    },
+    onError: (error) => {
+      console.error(error);
+    },
+  });
+
+  return {
+    createWorkout, // now async
+    isPending,
+    error,
+    createWorkoutData,
+  };
+};
+
+export const useUpdateWorkout = () => {
+  const { workouts, setWorkouts } = useWorkoutStore();
+  const queryClient = useQueryClient();
+  const {
+    mutate: updateWorkout,
+    isPending,
+    error,
+  } = useMutation({
+    mutationFn: ({
+      workoutId,
+      workout,
+    }: {
+      workoutId: string;
+      workout: Partial<Workout>;
+    }) => workoutAPI.updateWorkout(workoutId, workout),
+    onSuccess: (data) => {
+      setWorkouts([...workouts, data]);
+      queryClient.invalidateQueries({ queryKey: ["workouts"] });
+    },
+    onError: (error) => {
+      console.error(error);
+    },
+  });
+  return {
+    updateWorkout,
+    isPending,
+    error,
+  };
+};
+
+export const useDeleteWorkout = () => {
+  const queryClient = useQueryClient();
+  const { workouts, setWorkouts } = useWorkoutStore();
+  const {
+    mutateAsync: deleteWorkout,
+    isPending,
+    error,
+  } = useMutation({
+    mutationFn: (workoutId: string) => workoutAPI.deleteWorkout(workoutId),
+    onSuccess: (data) => {
+      setWorkouts(workouts.filter((workout) => workout._id !== data._id));
+      queryClient.invalidateQueries({ queryKey: ["creation-workout"] });
+      queryClient.invalidateQueries({ queryKey: ["workouts"] });
+    },
+    onError: (error) => {
+      console.error(error);
+    },
+  });
+  return { deleteWorkout, isPending, error };
 };

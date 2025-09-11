@@ -85,25 +85,25 @@ export default function RootLayout() {
         }}
       />
       <Tabs.Screen
-        name="workouts/createSplit"
+        name="workouts/createSchedule/[id]"
         options={{
           href: null,
         }}
       />
       <Tabs.Screen
-        name="workouts/createSchedule"
-        options={{
-          href: null,
-        }}
-      />
-      <Tabs.Screen
-        name="workouts/selectExercises"
+        name="workouts/selectExercises/[scheduleId]"
         options={{
           href: null,
         }}
       />
       <Tabs.Screen
         name="workouts/checkExercises"
+        options={{
+          href: null,
+        }}
+      />
+      <Tabs.Screen
+        name="workouts/viewWorkoutSplit/[id]"
         options={{
           href: null,
         }}

@@ -9,15 +9,23 @@ import React, { useState } from "react";
 import CustomText from "./CustomText";
 import { Ionicons } from "@expo/vector-icons";
 import Button from "./Button";
+import { useRouter } from "expo-router";
+import Schedule from "../types/schedule";
 
 const SplitCard = ({
   isCardOpen = false,
   splitDetails,
 }: {
   isCardOpen?: boolean;
-  splitDetails: { name: string; schedules: string[]; isActive: boolean };
+  splitDetails: {
+    _id: string;
+    name: string;
+    active?: boolean;
+    schedules?: Schedule[];
+  };
 }) => {
   const [open, setOpen] = useState(isCardOpen);
+  const router = useRouter();
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
@@ -34,19 +42,29 @@ const SplitCard = ({
       {open && (
         <>
           <View style={styles.exercisesContainer}>
-            {splitDetails.schedules.map((schedule, index) => (
-              <View style={styles.exerciseContainer} key={index * 2}>
-                <Ionicons name="ellipse" size={6} color="#707070" />
-                <CustomText style={styles.exercise}>{schedule}</CustomText>
-              </View>
-            ))}
+            {splitDetails.schedules && splitDetails.schedules.length > 0 ? (
+              splitDetails.schedules.map((schedule, index) => (
+                <View style={styles.exerciseContainer} key={index * 2}>
+                  <Ionicons name="ellipse" size={6} color="#707070" />
+                  <CustomText style={styles.exercise}>
+                    {schedule.name}
+                  </CustomText>
+                </View>
+              ))
+            ) : (
+              <CustomText style={styles.exercise}>No schedules</CustomText>
+            )}
           </View>
 
           <View style={styles.bottomContainer}>
-            <Pressable onPress={() => {}}>
+            <Pressable
+              onPress={() =>
+                router.push(`/workouts/viewWorkoutSplit/${splitDetails._id}`)
+              }
+            >
               <CustomText style={styles.viewMore}>View More</CustomText>
             </Pressable>
-            {!splitDetails.isActive ? (
+            {!splitDetails.active ? (
               <Button onPress={() => {}} size="small">
                 Activate
               </Button>

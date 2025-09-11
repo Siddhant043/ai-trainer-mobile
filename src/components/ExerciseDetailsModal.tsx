@@ -50,13 +50,15 @@ const ExerciseDetailsModal = ({
         {/* Content */}
         <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
           {/* Image */}
-          <View style={styles.section}>
-            <Image
-              source={{ uri: exercise.imageUrl[0] }}
-              resizeMode="contain"
-              style={styles.image}
-            />
-          </View>
+          {exercise.imageUrl.length > 0 && (
+            <View style={styles.section}>
+              <Image
+                source={{ uri: exercise.imageUrl[0] }}
+                resizeMode="contain"
+                style={styles.image}
+              />
+            </View>
+          )}
 
           {/* Description */}
           <View style={styles.section}>
@@ -141,7 +143,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: "#fff",
+    backgroundColor: "#f9f6f6",
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     maxHeight: screenHeight * 0.85,
