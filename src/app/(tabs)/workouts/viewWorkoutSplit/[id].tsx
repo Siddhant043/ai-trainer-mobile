@@ -7,20 +7,21 @@ import {
   Alert,
 } from "react-native";
 import React from "react";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import useWorkoutStore from "@/src/store/workoutStore";
+
 import { Feather, Ionicons } from "@expo/vector-icons";
 import CustomText from "@/src/components/CustomText";
-import Schedule from "@/src/types/schedule";
+
 import Button from "@/src/components/Button";
-import { useDeleteWorkout } from "@/src/hooks/useWorkout";
+import { useDeleteWorkout, useGetWorkouts } from "@/src/hooks/useWorkout";
 import ScheduleCard from "@/src/components/ScheduleCard";
+import { useWorkoutStore } from "@/src/store";
 
 const WorkoutDetails = () => {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { workouts } = useWorkoutStore();
+  const { workouts } = useGetWorkouts();
   const { deleteWorkout, isPending, error } = useDeleteWorkout();
   const workout = workouts && workouts.find((workout) => workout._id === id);
   const capitalizedWrokoutDays = workout?.workoutDays

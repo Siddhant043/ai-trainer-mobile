@@ -55,9 +55,6 @@ export const useCreateSchedule = () => {
         exercises: exercises || [],
       }),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({
-        queryKey: [`schedules-${data.workoutId}`],
-      });
       queryClient.invalidateQueries({ queryKey: ["workouts"] });
       const oldScheduleIds =
         workouts

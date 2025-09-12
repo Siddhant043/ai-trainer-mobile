@@ -67,8 +67,8 @@ export const useGetWorkouts = () => {
     if (workouts) {
       setWorkouts(workouts);
       storage.set("workouts", JSON.stringify(workouts));
-    } else if (storedWorkouts) {
-      setWorkouts(JSON.parse(storedWorkouts));
+    } else if (error) {
+      setWorkouts(JSON.parse(storedWorkouts || ""));
     }
   }, [workouts, storedWorkouts]);
   return {
