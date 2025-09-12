@@ -9,17 +9,28 @@ import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import CustomText from "@/src/components/CustomText";
 import { FontAwesome5 } from "@expo/vector-icons";
-import { useUserStore } from "@/src/store";
+import { useUserStore, useWorkoutStore } from "@/src/store";
 import { RelativePathString, useRouter } from "expo-router";
 import CircularProgress from "@/src/components/CircularProgress";
 import TrackCaloriesHome from "@/src/components/TrackCaloriesHome";
 import AgentMessage from "@/src/components/AgentMessage";
 import EmptyWorkoutPlan from "@/src/components/EmptyWorkoutPlan";
 import DrawerModal from "@/src/components/DrawerModal";
+import { WEEKDAYS } from "@/src/constants";
+import ScheduleCard from "@/src/components/ScheduleCard";
+import { useGetWorkouts } from "@/src/hooks/useWorkout";
 
 const Home = () => {
   const { user } = useUserStore();
+
+  const { getActiveWorkout } = useWorkoutStore();
   const router = useRouter();
+  const activeWorkout = getActiveWorkout();
+  const currentDay = new Date().getDay();
+  const todaysSchedule =
+    activeWorkout?.schedules?.find((schedule) =>
+      schedule.days?.includes(WEEKDAYS[currentDay])
+    ) || null;
   const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
   return (
     <SafeAreaView style={styles.container}>
@@ -82,7 +93,20 @@ const Home = () => {
           type="suggestion"
           value="Add 10 mins inclined walking and 5 mins cycling after workout."
         />
-        <EmptyWorkoutPlan />
+        <View style={styles.workoutPlanContainer}>
+          <CustomText style={styles.workoutPlanText}>
+            Today's Workout Plan
+          </CustomText>
+          {todaysSchedule ? (
+            <ScheduleCard
+              scheduleDetails={todaysSchedule}
+              isActivityCard={true}
+              isCardOpen={true}
+            />
+          ) : (
+            <EmptyWorkoutPlan />
+          )}
+        </View>
       </ScrollView>
       <DrawerModal
         isOpen={isDrawerOpen}
@@ -140,6 +164,17 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  workoutPlanContainer: {
+    marginTop: 20,
+    flexDirection: "column",
+    gap: 10,
+    marginBottom: 70,
+  },
+  workoutPlanText: {
+    fontSize: 20,
+    fontFamily: "Outfit-Regular",
+  },
+
   dayText: {
     fontSize: 12,
     marginTop: 5,

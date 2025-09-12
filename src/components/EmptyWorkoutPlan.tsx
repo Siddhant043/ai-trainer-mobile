@@ -8,9 +8,6 @@ const EmptyWorkoutPlan = () => {
   const router = useRouter();
   return (
     <>
-      <CustomText style={styles.workoutPlanText}>
-        Today's Workout Plan
-      </CustomText>
       <View style={styles.container}>
         <CustomText style={styles.title}>No workouts detected</CustomText>
         <CustomText style={styles.description}>
@@ -29,11 +26,6 @@ const EmptyWorkoutPlan = () => {
 };
 
 const styles = StyleSheet.create({
-  workoutPlanText: {
-    marginTop: 20,
-    fontSize: 20,
-    fontFamily: "Outfit-Regular",
-  },
   container: {
     flex: 1,
     marginTop: 10,

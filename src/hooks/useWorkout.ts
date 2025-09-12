@@ -4,6 +4,7 @@ import { workoutAPI } from "../api/workout";
 import { ExercisesResponse, Workout } from "../types";
 import useWorkoutStore from "../store/workoutStore";
 import { useEffect } from "react";
+import storage from "../config/storage";
 
 export const useGetExercises = (
   name = "",
@@ -53,6 +54,7 @@ export const useGetExercises = (
 
 export const useGetWorkouts = () => {
   const { setWorkouts } = useWorkoutStore();
+  const storedWorkouts = storage.getString("workouts");
   const {
     data: workouts,
     isPending,
@@ -64,8 +66,11 @@ export const useGetWorkouts = () => {
   useEffect(() => {
     if (workouts) {
       setWorkouts(workouts);
+      storage.set("workouts", JSON.stringify(workouts));
+    } else if (storedWorkouts) {
+      setWorkouts(JSON.parse(storedWorkouts));
     }
-  }, [workouts]);
+  }, [workouts, storedWorkouts]);
   return {
     workouts,
     isPending,
@@ -95,6 +100,7 @@ export const useCreateWorkout = () => {
       queryClient.invalidateQueries({ queryKey: ["creation-workout"] });
       queryClient.invalidateQueries({ queryKey: ["workouts"] });
       setWorkouts([...workouts, data]);
+      storage.set("workouts", JSON.stringify([...workouts, data]));
     },
     onError: (error) => {
       console.error(error);
@@ -126,6 +132,7 @@ export const useUpdateWorkout = () => {
     }) => workoutAPI.updateWorkout(workoutId, workout),
     onSuccess: (data) => {
       setWorkouts([...workouts, data]);
+      storage.set("workouts", JSON.stringify([...workouts, data]));
       queryClient.invalidateQueries({ queryKey: ["workouts"] });
     },
     onError: (error) => {
@@ -152,10 +159,43 @@ export const useDeleteWorkout = () => {
       setWorkouts(workouts.filter((workout) => workout._id !== data._id));
       queryClient.invalidateQueries({ queryKey: ["creation-workout"] });
       queryClient.invalidateQueries({ queryKey: ["workouts"] });
+      storage.set(
+        "workouts",
+        JSON.stringify(workouts.filter((workout) => workout._id !== data._id))
+      );
     },
     onError: (error) => {
       console.error(error);
     },
   });
   return { deleteWorkout, isPending, error };
+};
+
+export const useToggleWorkoutActiveStatus = () => {
+  const queryClient = useQueryClient();
+  const { workouts, setWorkouts } = useWorkoutStore();
+  const {
+    mutateAsync: toggleWorkoutActiveStatus,
+    isPending,
+    error,
+  } = useMutation({
+    mutationFn: (workoutId: string) =>
+      workoutAPI.toggleWorkoutActiveStatus(workoutId),
+    onSuccess: (data) => {
+      setWorkouts(
+        workouts.map((workout) => (workout._id === data._id ? data : workout))
+      );
+      queryClient.invalidateQueries({ queryKey: ["workouts"] });
+      storage.set(
+        "workouts",
+        JSON.stringify(
+          workouts.map((workout) => (workout._id === data._id ? data : workout))
+        )
+      );
+    },
+    onError: (error) => {
+      console.error(error);
+    },
+  });
+  return { toggleWorkoutActiveStatus, isPending, error };
 };

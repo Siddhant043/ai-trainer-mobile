@@ -14,9 +14,22 @@ import { useRouter } from "expo-router";
 import ScheduleCard from "@/src/components/ScheduleCard";
 import SecondaryButton from "@/src/components/SecondaryButton";
 import Button from "@/src/components/Button";
+import { useWorkoutStore } from "@/src/store";
+import { WEEKDAYS } from "@/src/constants";
 
 const Workouts = () => {
   const router = useRouter();
+  const { getActiveWorkout } = useWorkoutStore();
+  const activeWorkout = getActiveWorkout();
+  const currentDay = new Date().getDay();
+  const currentScheduleDetails =
+    activeWorkout?.schedules?.find((schedule) =>
+      schedule.days?.includes(WEEKDAYS[currentDay])
+    ) || null;
+  const otherSchedules =
+    activeWorkout?.schedules?.filter(
+      (schedule) => !schedule.days?.includes(WEEKDAYS[currentDay])
+    ) || null;
 
   const handleWorkoutSplits = () => {
     router.navigate("/(tabs)/workouts/splits");
@@ -28,57 +41,6 @@ const Workouts = () => {
   const handleShowExercises = () => {
     router.navigate("/(tabs)/workouts/checkExercises");
   };
-  const currentScheduleDetails = {
-    _id: "1",
-    name: "Back and Biceps",
-    description: "This is a description of the workout split",
-    days: ["Monday", "Wednesday", "Friday"],
-    exercises: [
-      { exerciseName: "Pull Ups" },
-      { exerciseName: "Lat Pull Down" },
-      { exerciseName: "Close Grip Lat Pull Down" },
-      { exerciseName: "Seated Cable Rows" },
-      { exerciseName: "Dumbbell Rows" },
-      { exerciseName: "T Bar Rows" },
-      { exerciseName: "Inclined Dumbbell Curls" },
-      { exerciseName: "Hammer Curls" },
-    ],
-  };
-
-  const otherSchedules = [
-    {
-      _id: "2",
-      name: "Chest and Triceps",
-      description: "This is a description of the workout split",
-      days: ["Monday", "Wednesday", "Friday"],
-      exercises: [
-        { exerciseName: "Bench Press" },
-        { exerciseName: "Incline Bench Press" },
-        { exerciseName: "Decline Bench Press" },
-        { exerciseName: "Push Ups" },
-        { exerciseName: "Tricep Pushdowns" },
-        { exerciseName: "Tricep Extensions" },
-        { exerciseName: "Tricep Pushdowns" },
-      ],
-    },
-    {
-      _id: "3",
-      name: "Legs and Shoulders",
-      description: "This is a description of the workout split",
-      days: ["Monday", "Wednesday", "Friday"],
-      exercises: [
-        { exerciseName: "Squats" },
-        { exerciseName: "Leg Press" },
-        { exerciseName: "Leg Extension" },
-        { exerciseName: "Leg Curl" },
-        { exerciseName: "Calf Raises" },
-        { exerciseName: "Shoulder Press" },
-        { exerciseName: "Lateral Raises" },
-        { exerciseName: "Front Raises" },
-        { exerciseName: "Reverse Flys" },
-      ],
-    },
-  ];
 
   return (
     <>
@@ -96,22 +58,25 @@ const Workouts = () => {
                 Active Workout Split:
               </CustomText>
               <CustomText style={styles.activeSplitTextValueName}>
-                2-muscle/day
+                {activeWorkout?.name}
               </CustomText>
             </View>
-            <ScheduleCard
-              scheduleDetails={currentScheduleDetails}
-              isCardOpen={true}
-              isActivityCard={true}
-            />
-
-            {otherSchedules.map((schedule) => (
+            {currentScheduleDetails && (
               <ScheduleCard
-                key={schedule.name}
-                scheduleDetails={schedule}
+                scheduleDetails={currentScheduleDetails}
+                isCardOpen={true}
                 isActivityCard={true}
               />
-            ))}
+            )}
+
+            {otherSchedules &&
+              otherSchedules.map((schedule) => (
+                <ScheduleCard
+                  key={schedule.name}
+                  scheduleDetails={schedule}
+                  isActivityCard={true}
+                />
+              ))}
           </View>
           <View style={styles.buttonsContainer}>
             <SecondaryButton onPress={handleWorkoutSplits}>
@@ -177,6 +142,7 @@ const styles = StyleSheet.create({
   buttonsContainer: {
     flexDirection: "column",
     gap: 10,
+    marginBottom: 70,
   },
 });
 

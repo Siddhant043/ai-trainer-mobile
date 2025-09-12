@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
   },
   exerciseRow: {
     flexDirection: "row",
-    alignItems: "center",
+    alignItems: "flex-start",
     marginBottom: 8,
   },
   bullet: {
@@ -210,6 +210,7 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     backgroundColor: "#707070",
     marginRight: 12,
+    marginTop: 8,
   },
   exercise: {
     fontSize: 16,

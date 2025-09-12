@@ -53,7 +53,7 @@ const CreateSchedule = () => {
       setError("Workout ID is required");
       return;
     }
-    if (!scheduleName || !description) {
+    if (!scheduleName || !description || !selectedDays.length) {
       setError("Please fill all the fields");
       return;
     }
@@ -76,7 +76,7 @@ const CreateSchedule = () => {
         exercises: selectedExercises,
       });
       if (schedule._id) {
-        resetFields();
+        await resetFields();
         router.navigate(`/(tabs)/workouts/viewWorkoutSplit/${id}`);
       }
     } catch (error: any) {
@@ -119,7 +119,7 @@ const CreateSchedule = () => {
           handleValueChange={setDescription}
         />
         <MultiSelectCustomPicker
-          label="Schedule Days (Optional)"
+          label="Schedule Days"
           options={dayOptions}
           selectedValues={selectedDays}
           onValueChange={setSelectedDays}
@@ -162,15 +162,28 @@ const ExercisesModal = ({
       animationType="slide"
       onRequestClose={() => setIsOpen(false)}
     >
-      <TouchableWithoutFeedback onPress={() => setIsOpen(false)}>
-        <View style={styles.backdrop} />
-      </TouchableWithoutFeedback>
-      <View style={styles.bottomSheet}>
-        <SelectExercisesChild
-          selectedExercises={selectedExercises}
-          setSelectedExercises={setSelectedExercises}
-          isSelectable={true}
-        />
+      <View style={styles.modalContainer}>
+        <TouchableWithoutFeedback onPress={() => setIsOpen(false)}>
+          <View style={styles.backdrop} />
+        </TouchableWithoutFeedback>
+        <View style={styles.bottomSheet}>
+          <View style={styles.modalHeader}>
+            <CustomText style={styles.modalTitle}>Select Exercises</CustomText>
+            <TouchableOpacity
+              onPress={() => setIsOpen(false)}
+              style={styles.closeButton}
+            >
+              <Ionicons name="close" size={24} color="#707070" />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.modalContent}>
+            <SelectExercisesChild
+              selectedExercises={selectedExercises}
+              setSelectedExercises={setSelectedExercises}
+              isSelectable={true}
+            />
+          </View>
+        </View>
       </View>
     </Modal>
   );
@@ -205,21 +218,43 @@ const styles = StyleSheet.create({
     color: "red",
     fontSize: 12,
   },
-  backdrop: {
+  modalContainer: {
     flex: 1,
-    backgroundColor: "rgba(0,0,0,0.3)",
+    justifyContent: "flex-end",
   },
-  bottomSheet: {
+  backdrop: {
     position: "absolute",
-    bottom: 0,
+    top: 0,
     left: 0,
     right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(0,0,0,0.5)",
+  },
+  bottomSheet: {
     backgroundColor: "#f9f6f6",
     borderTopLeftRadius: 20,
-    padding: 10,
     borderTopRightRadius: 20,
-    maxHeight: screenHeight * 0.85,
-    minHeight: screenHeight * 0.4,
+    maxHeight: screenHeight * 0.92,
+    minHeight: screenHeight * 0.92,
+  },
+  modalHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "#e0e0e0",
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontFamily: "Outfit-SemiBold",
+    color: "#333",
+  },
+  closeButton: {
+    padding: 4,
+  },
+  modalContent: {
+    flex: 1,
   },
 });
 

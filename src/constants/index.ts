@@ -288,3 +288,13 @@ export const CATEGORY = [
 ];
 
 export const DIFFICULTY = ["beginner", "intermediate", "advanced"];
+
+export const WEEKDAYS = [
+  "sunday",
+  "monday",
+  "tuesday",
+  "wednesday",
+  "thursday",
+  "friday",
+  "saturday",
+];

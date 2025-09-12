@@ -11,6 +11,8 @@ import { Ionicons } from "@expo/vector-icons";
 import Button from "./Button";
 import { useRouter } from "expo-router";
 import Schedule from "../types/schedule";
+import { useToggleWorkoutActiveStatus } from "../hooks/useWorkout";
+import { useWorkoutStore } from "../store";
 
 const SplitCard = ({
   isCardOpen = false,
@@ -25,6 +27,18 @@ const SplitCard = ({
   };
 }) => {
   const [open, setOpen] = useState(isCardOpen);
+  const { workouts } = useWorkoutStore();
+  const activeWorkouts = workouts.filter((workout) => workout.active);
+  const { toggleWorkoutActiveStatus } = useToggleWorkoutActiveStatus();
+
+  const handleToggleWorkoutActiveStatus = async () => {
+    if (activeWorkouts.length > 0) {
+      activeWorkouts.forEach(async (workout) => {
+        await toggleWorkoutActiveStatus(workout._id);
+      });
+    }
+    await toggleWorkoutActiveStatus(splitDetails._id);
+  };
   const router = useRouter();
   return (
     <View style={styles.container}>
@@ -65,11 +79,16 @@ const SplitCard = ({
               <CustomText style={styles.viewMore}>View More</CustomText>
             </Pressable>
             {!splitDetails.active ? (
-              <Button onPress={() => {}} size="small">
+              <Button onPress={handleToggleWorkoutActiveStatus} size="small">
                 Activate
               </Button>
             ) : (
-              <CustomText style={styles.active}>Active</CustomText>
+              <TouchableOpacity
+                activeOpacity={0.1}
+                onPress={handleToggleWorkoutActiveStatus}
+              >
+                <CustomText style={styles.active}>Active</CustomText>
+              </TouchableOpacity>
             )}
           </View>
         </>

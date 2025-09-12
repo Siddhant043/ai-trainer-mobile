@@ -52,4 +52,11 @@ export const workoutAPI = {
     );
     return response.data;
   },
+
+  toggleWorkoutActiveStatus: async (workoutId: string) => {
+    const response = await api.patch(
+      `${WORKOUT_MS_URL}/workouts/${workoutId}/toggle-active-status`
+    );
+    return response.data;
+  },
 };

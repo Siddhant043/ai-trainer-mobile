@@ -1,12 +1,15 @@
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import SelectExercisesChild from "@/src/components/SelectExercisesChild";
 import CustomText from "@/src/components/CustomText";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { Exercise } from "@/src/types";
 
 const CheckExercises = () => {
+  const [selectedExercises, setSelectedExercises] = useState<Exercise[]>([]);
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -18,11 +21,13 @@ const CheckExercises = () => {
         </TouchableOpacity>
         <CustomText style={styles.title}>Exercises</CustomText>
       </View>
-      <SelectExercisesChild
-        selectedExercises={[]}
-        setSelectedExercises={() => []}
-        isSelectable={false}
-      />
+      <View style={styles.content}>
+        <SelectExercisesChild
+          selectedExercises={selectedExercises}
+          setSelectedExercises={setSelectedExercises}
+          isSelectable={false}
+        />
+      </View>
     </SafeAreaView>
   );
 };
@@ -30,7 +35,6 @@ const CheckExercises = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
     backgroundColor: "#f9f6f6",
   },
   header: {
@@ -38,8 +42,12 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     gap: 10,
     alignItems: "center",
+    padding: 10,
   },
-
+  content: {
+    flex: 1,
+    paddingHorizontal: 10,
+  },
   title: {
     fontSize: 20,
     fontWeight: "regular",

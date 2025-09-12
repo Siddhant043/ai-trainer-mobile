@@ -236,7 +236,7 @@ const SelectExercisesChild = ({
         selectedExercises={selectedExercises}
       />
     ),
-    [selectedExercises]
+    [isSelectable, setSelectedExercises, selectedExercises]
   );
 
   // Memoized footer component
@@ -379,8 +379,9 @@ const SelectExercisesChild = ({
               tintColor="#007AFF"
             />
           }
-          keyExtractor={(item) => item._id}
-          removeClippedSubviews={true}
+          keyExtractor={(item, index) => `${item._id}-${index}`}
+          removeClippedSubviews={false}
+          drawDistance={250}
         />
       </View>
     </View>

@@ -88,7 +88,7 @@ const WorkoutDetails = () => {
               router.navigate(`/(tabs)/workouts/createSchedule/${workout?._id}`)
             }
           >
-            Create Schedule
+            Add Schedule
           </Button>
         </View>
       </ScrollView>

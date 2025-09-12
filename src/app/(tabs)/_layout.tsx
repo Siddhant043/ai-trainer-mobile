@@ -5,8 +5,10 @@ import FoodTabIcon from "@/src/components/icons/FoodTabIcon";
 import HomeTabIcon from "@/src/components/icons/HomeTabIcon";
 import WorkoutTabIcon from "@/src/components/icons/WorkoutTabIcon";
 import { Tabs } from "expo-router";
+import { useGetWorkouts } from "@/src/hooks/useWorkout";
 
 export default function RootLayout() {
+  const { workouts } = useGetWorkouts();
   return (
     <Tabs
       screenOptions={{

@@ -20,10 +20,15 @@ const ExerciseDetailsModal = ({
   visible,
   onRequestClose,
 }: {
-  exercise: Exercise;
+  exercise: Partial<Exercise>;
   visible: boolean;
   onRequestClose: () => void;
 }) => {
+  // Early return if exercise is not available
+  if (!exercise || !exercise._id) {
+    return null;
+  }
+
   return (
     <Modal
       visible={visible}
@@ -50,10 +55,14 @@ const ExerciseDetailsModal = ({
         {/* Content */}
         <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
           {/* Image */}
-          {exercise.imageUrl.length > 0 && (
+          {exercise.imageUrl && exercise.imageUrl.length > 0 && (
             <View style={styles.section}>
               <Image
-                source={{ uri: exercise.imageUrl[0] }}
+                source={{
+                  uri:
+                    exercise.imageUrl[0] ||
+                    "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.freeiconspng.com%2Fimages%2Fno-image-icon&psig=AOvVaw3EKFb3YYAXeljYwSfSUUxR&ust=1757702763246000&source=images&cd=vfe&opi=89978449&ved=0CBUQjRxqFwoTCODKoJ2v0Y8DFQAAAAAdAAAAABAE",
+                }}
                 resizeMode="contain"
                 style={styles.image}
               />
@@ -114,18 +123,19 @@ const ExerciseDetailsModal = ({
           {/* Instructions */}
           <View style={styles.section}>
             <CustomText style={styles.sectionTitle}>Instructions</CustomText>
-            {exercise.instructions.map((instruction, index) => (
-              <View key={index} style={styles.instructionItem}>
-                <View style={styles.instructionNumber}>
-                  <CustomText style={styles.instructionNumberText}>
-                    {index + 1}
+            {exercise.instructions &&
+              exercise.instructions.map((instruction, index) => (
+                <View key={index} style={styles.instructionItem}>
+                  <View style={styles.instructionNumber}>
+                    <CustomText style={styles.instructionNumberText}>
+                      {index + 1}
+                    </CustomText>
+                  </View>
+                  <CustomText style={styles.instructionText}>
+                    {instruction}
                   </CustomText>
                 </View>
-                <CustomText style={styles.instructionText}>
-                  {instruction}
-                </CustomText>
-              </View>
-            ))}
+              ))}
           </View>
         </ScrollView>
       </View>
