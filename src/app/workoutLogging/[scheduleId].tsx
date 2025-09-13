@@ -1,25 +1,37 @@
-import { View, StatusBar, StyleSheet } from "react-native";
+import { View, StatusBar, StyleSheet, ScrollView } from "react-native";
 import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import CustomText from "@/src/components/CustomText";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useScheduleStore } from "@/src/store";
+import { useScheduleStore, useUserStore } from "@/src/store";
 import { Schedule } from "@/src/types";
 import SecondaryButton from "@/src/components/SecondaryButton";
 import { Ionicons } from "@expo/vector-icons";
+import ExerciseLogger from "@/src/components/ExerciseLogger";
+import { useScheduleRecordStore } from "@/src/store";
 
 const WorkoutLogging = () => {
   const { scheduleId } = useLocalSearchParams<{ scheduleId: string }>();
   const router = useRouter();
+  const { user } = useUserStore();
   const [timer, setTimer] = useState<number>(0); // start from 0 seconds
   const { getOneSchedule } = useScheduleStore();
   const schedule = getOneSchedule(scheduleId) as Schedule;
   const [stopTimer, setStopTimer] = useState<boolean>(false);
+  const { initializeScheduleRecord } = useScheduleRecordStore();
   // redirect if schedule not found
   useEffect(() => {
     if (!schedule) {
       router.navigate("/(tabs)/workouts");
     }
+  }, [schedule]);
+
+  useEffect(() => {
+    initializeScheduleRecord({
+      scheduleId,
+      userId: user._id,
+      workoutId: schedule.workoutId,
+    });
   }, [schedule]);
 
   // run timer
@@ -86,6 +98,17 @@ const WorkoutLogging = () => {
           </View>
         </View>
       </View>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View style={styles.exercisesContainer}>
+          {exercises.map((exercise) => (
+            <ExerciseLogger
+              key={exercise._id}
+              exercise={exercise}
+              scheduleId={scheduleId}
+            />
+          ))}
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -132,6 +155,12 @@ const styles = StyleSheet.create({
   timeText: {
     fontSize: 16,
     color: "#707070",
+  },
+  exercisesContainer: {
+    flex: 1,
+    flexDirection: "column",
+    gap: 30,
+    marginTop: 30,
   },
 });
 

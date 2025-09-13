@@ -4,6 +4,8 @@ export { default as User } from "./userTypes";
 export { default as Exercise } from "./exercise";
 export { default as Workout } from "./workout";
 export { default as Schedule } from "./schedule";
+export { default as ExerciseRecord } from "./exerciseRecord";
+export { default as ScheduleRecord } from "./scheduleRecord";
 
 // API Response Types
 export interface ExercisesResponse {
