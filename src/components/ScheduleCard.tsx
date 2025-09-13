@@ -5,6 +5,7 @@ import Button from "./Button";
 import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Exercise } from "@/src/types";
 import { useDeleteSchedule } from "@/src/hooks/useSchedule";
+import { useRouter } from "expo-router";
 
 const ScheduleCard = ({
   scheduleDetails,
@@ -17,12 +18,14 @@ const ScheduleCard = ({
     description: string;
     exercises: Partial<Exercise>[];
     days?: string[];
+    workoutId: string;
   };
   isCardOpen?: boolean;
   isActivityCard?: boolean;
 }) => {
   const { deleteSchedule, isPending, error } = useDeleteSchedule();
   const [isDeleting, setIsDeleting] = useState(false);
+  const router = useRouter();
   // Split exercises into two columns
   let leftColumn = scheduleDetails.exercises.slice(
     0,
@@ -71,6 +74,12 @@ const ScheduleCard = ({
       return;
     }
     setIsDeleting(false);
+  };
+
+  const handleEditSchedule = () => {
+    router.push(
+      `/workouts/createSchedule/${scheduleDetails.workoutId}?scheduleId=${scheduleDetails._id}`
+    );
   };
 
   return (
@@ -143,7 +152,7 @@ const ScheduleCard = ({
           <TouchableOpacity onPress={handleDeleteSchedule}>
             <Feather name="trash-2" size={24} color="#EA2929" />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => {}}>
+          <TouchableOpacity onPress={handleEditSchedule}>
             <MaterialCommunityIcons name="pencil" size={24} color="black" />
           </TouchableOpacity>
         </View>

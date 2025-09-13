@@ -6,24 +6,25 @@ import {
   ScrollView,
   Alert,
 } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams, useRouter } from "expo-router";
-
-import { Feather, Ionicons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import CustomText from "@/src/components/CustomText";
-
 import Button from "@/src/components/Button";
 import { useDeleteWorkout, useGetWorkouts } from "@/src/hooks/useWorkout";
 import ScheduleCard from "@/src/components/ScheduleCard";
-import { useWorkoutStore } from "@/src/store";
+import DropdownMenu, { DropdownMenuItem } from "@/src/components/DropdownMenu";
+import CreateWorkoutSplitModal from "@/src/components/CreateWorkoutSplitModal";
 
 const WorkoutDetails = () => {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
   const { workouts } = useGetWorkouts();
+  const [isOpen, setIsOpen] = useState(false);
   const { deleteWorkout, isPending, error } = useDeleteWorkout();
   const workout = workouts && workouts.find((workout) => workout._id === id);
+
   const capitalizedWrokoutDays = workout?.workoutDays
     ?.map((day) => day.charAt(0).toUpperCase() + day.slice(1))
     .join(", ");
@@ -52,6 +53,29 @@ const WorkoutDetails = () => {
     }
   };
 
+  const handleEditWorkout = () => {
+    setIsOpen(true);
+  };
+
+  // Define menu items
+  const menuItems: DropdownMenuItem[] = [
+    {
+      id: "edit",
+      label: "Edit",
+      icon: "edit-2",
+      iconColor: "#007AFF",
+      onPress: handleEditWorkout,
+    },
+    {
+      id: "delete",
+      label: "Delete",
+      icon: "trash-2",
+      iconColor: "#EA2929",
+      textColor: "#EA2929",
+      onPress: handleDeleteWorkout,
+    },
+  ];
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -64,9 +88,7 @@ const WorkoutDetails = () => {
           </TouchableOpacity>
           <CustomText style={styles.title}>{workout?.name}</CustomText>
         </View>
-        <TouchableOpacity activeOpacity={0.8} onPress={handleDeleteWorkout}>
-          <Feather name="trash-2" size={24} color="#EA2929" />
-        </TouchableOpacity>
+        <DropdownMenu items={menuItems} />
       </View>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.descriptionContainer}>
@@ -81,9 +103,15 @@ const WorkoutDetails = () => {
         </View>
         <View style={styles.schedulesContainer}>
           <CustomText style={styles.title}>Schedules</CustomText>
-          {workout?.schedules?.map((schedule) => (
-            <ScheduleCard key={schedule._id} scheduleDetails={schedule} />
-          ))}
+          {workout?.schedules?.length && workout?.schedules?.length > 0 ? (
+            workout?.schedules?.map((schedule) => (
+              <ScheduleCard key={schedule._id} scheduleDetails={schedule} />
+            ))
+          ) : (
+            <CustomText style={styles.description}>
+              No schedules found
+            </CustomText>
+          )}
           <Button
             onPress={() =>
               router.navigate(`/(tabs)/workouts/createSchedule/${workout?._id}`)
@@ -93,6 +121,11 @@ const WorkoutDetails = () => {
           </Button>
         </View>
       </ScrollView>
+      <CreateWorkoutSplitModal
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        workoutId={workout?._id}
+      />
     </SafeAreaView>
   );
 };

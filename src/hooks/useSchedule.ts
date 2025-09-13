@@ -55,7 +55,12 @@ export const useCreateSchedule = () => {
         exercises: exercises || [],
       }),
     onSuccess: (data) => {
+      // Invalidate both workouts and schedules queries
       queryClient.invalidateQueries({ queryKey: ["workouts"] });
+      queryClient.invalidateQueries({
+        queryKey: ["schedules", data.workoutId],
+      });
+
       const oldScheduleIds =
         workouts
           .find((workout) => workout._id === data.workoutId)
@@ -83,9 +88,14 @@ export const useUpdateSchedule = () => {
     mutationFn: (schedule: Partial<Schedule>) =>
       scheduleAPI.updateSchedule(schedule),
     onSuccess: (data) => {
+      // Invalidate both schedules and workouts queries
       queryClient.invalidateQueries({
-        queryKey: [`schedules-${data.workoutId}`],
+        queryKey: ["schedules", data.workoutId],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["workouts"],
+      });
+      // Update the store with the updated schedule
       setSchedules(
         schedules.map((schedule) =>
           schedule._id === data._id ? data : schedule
@@ -109,7 +119,7 @@ export const useDeleteSchedule = () => {
     mutationFn: (scheduleId: string) => scheduleAPI.deleteSchedule(scheduleId),
     onSuccess: (data) => {
       queryClient.invalidateQueries({
-        queryKey: [`schedules-${data.workoutId}`],
+        queryKey: ["schedules", data.workoutId],
       });
       queryClient.invalidateQueries({ queryKey: ["workouts"] });
       setSchedules(schedules.filter((schedule) => schedule._id !== data._id));

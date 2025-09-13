@@ -41,6 +41,10 @@ export default function RootLayout() {
         <Stack.Screen name="onboarding" options={{ title: "Onboarding" }} />
         <Stack.Screen name="home" options={{ title: "Home" }} />
         <Stack.Screen name="chat/[id]" options={{ title: "Chat" }} />
+        <Stack.Screen
+          name="workoutLogging/[scheduleId]"
+          options={{ title: "Workout Logging" }}
+        />
       </Stack>
     </QueryClientProvider>
   );

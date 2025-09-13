@@ -87,7 +87,7 @@ export default function RootLayout() {
         }}
       />
       <Tabs.Screen
-        name="workouts/createSchedule/[id]"
+        name="workouts/createSchedule/[workoutId]"
         options={{
           href: null,
         }}
