@@ -18,7 +18,6 @@ import EmptyWorkoutPlan from "@/src/components/EmptyWorkoutPlan";
 import DrawerModal from "@/src/components/DrawerModal";
 import { WEEKDAYS } from "@/src/constants";
 import ScheduleCard from "@/src/components/ScheduleCard";
-import { useGetWorkouts } from "@/src/hooks/useWorkout";
 
 const Home = () => {
   const { user } = useUserStore();

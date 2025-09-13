@@ -3,7 +3,25 @@ import { Exercise, Schedule } from "../types";
 import { scheduleAPI } from "../api/schedule";
 import { useScheduleStore, useWorkoutStore } from "../store";
 import { useEffect } from "react";
-import { useUpdateWorkout } from "./useWorkout";
+import { useGetWorkouts, useUpdateWorkout } from "./useWorkout";
+
+export const useGetSchedules = () => {
+  const { setSchedules } = useScheduleStore();
+  const {
+    data: schedules,
+    isLoading,
+    error,
+  } = useQuery<Schedule[]>({
+    queryKey: ["schedules"],
+    queryFn: () => scheduleAPI.getAllSchedules(),
+  });
+  useEffect(() => {
+    if (schedules) {
+      setSchedules(schedules);
+    }
+  }, [schedules]);
+  return { schedules, isLoading, error };
+};
 
 export const useGetSchedulesByWorkoutId = (workoutId: string) => {
   const { setSchedules } = useScheduleStore();
@@ -27,7 +45,7 @@ export const useCreateSchedule = () => {
   const queryClient = useQueryClient();
   const { setSchedules, schedules } = useScheduleStore();
   const { updateWorkout } = useUpdateWorkout();
-  const { workouts } = useWorkoutStore();
+  const { workouts } = useGetWorkouts();
 
   const {
     mutateAsync: createSchedule,
@@ -55,23 +73,22 @@ export const useCreateSchedule = () => {
         exercises: exercises || [],
       }),
     onSuccess: (data) => {
-      // Invalidate both workouts and schedules queries
-      queryClient.invalidateQueries({ queryKey: ["workouts"] });
       queryClient.invalidateQueries({
         queryKey: ["schedules", data.workoutId],
       });
-
       const oldScheduleIds =
         workouts
-          .find((workout) => workout._id === data.workoutId)
+          ?.find((workout) => workout._id === data.workoutId)
           ?.schedules?.map((schedule) => schedule._id) || [];
+
+      const updatedSchedules = [...oldScheduleIds, data];
+      setSchedules([...schedules, data]);
       updateWorkout({
         workoutId: data.workoutId,
         workout: {
-          schedules: [...oldScheduleIds, data._id],
+          schedules: updatedSchedules,
         },
       });
-      setSchedules([...schedules, data]);
     },
   });
   return { createSchedule, isPending, error };
@@ -80,6 +97,7 @@ export const useCreateSchedule = () => {
 export const useUpdateSchedule = () => {
   const { setSchedules, schedules } = useScheduleStore();
   const queryClient = useQueryClient();
+  const { refetch: refetchWorkouts } = useGetWorkouts();
   const {
     mutateAsync: updateSchedule,
     isPending,
@@ -92,9 +110,7 @@ export const useUpdateSchedule = () => {
       queryClient.invalidateQueries({
         queryKey: ["schedules", data.workoutId],
       });
-      queryClient.invalidateQueries({
-        queryKey: ["workouts"],
-      });
+      refetchWorkouts();
       // Update the store with the updated schedule
       setSchedules(
         schedules.map((schedule) =>
@@ -110,7 +126,7 @@ export const useDeleteSchedule = () => {
   const queryClient = useQueryClient();
   const { setSchedules, schedules } = useScheduleStore();
   const { updateWorkout } = useUpdateWorkout();
-
+  const { refetch: refetchWorkouts } = useGetWorkouts();
   const {
     mutateAsync: deleteSchedule,
     isPending,
@@ -121,7 +137,7 @@ export const useDeleteSchedule = () => {
       queryClient.invalidateQueries({
         queryKey: ["schedules", data.workoutId],
       });
-      queryClient.invalidateQueries({ queryKey: ["workouts"] });
+      refetchWorkouts();
       setSchedules(schedules.filter((schedule) => schedule._id !== data._id));
       updateWorkout({
         workoutId: data.workoutId,
@@ -134,7 +150,7 @@ export const useDeleteSchedule = () => {
       console.log(error);
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["workouts"] });
+      refetchWorkouts();
     },
   });
   return { deleteSchedule, isPending, error };

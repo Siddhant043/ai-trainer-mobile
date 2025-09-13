@@ -82,6 +82,10 @@ const ScheduleCard = ({
     );
   };
 
+  const handleStartWorkout = () => {
+    router.push(`/workoutLogging/${scheduleDetails._id}`);
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.titleContainer}>
@@ -140,7 +144,7 @@ const ScheduleCard = ({
         <View
           style={[styles.buttonContainer, !isExpanded && { display: "none" }]}
         >
-          <Button onPress={() => {}}>Start</Button>
+          <Button onPress={handleStartWorkout}>Start</Button>
         </View>
       ) : (
         <View

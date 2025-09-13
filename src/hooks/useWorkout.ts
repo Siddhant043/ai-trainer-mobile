@@ -15,7 +15,7 @@ export const useGetExercises = (
   equipment = "",
   category = ""
 ) => {
-  const queryClient = useQueryClient();
+  const { refetch: refetchExercises } = useGetExercises();
 
   const query = useQuery<ExercisesResponse>({
     queryKey: [
@@ -47,8 +47,7 @@ export const useGetExercises = (
 
   return {
     ...query,
-    invalidateQueries: () =>
-      queryClient.invalidateQueries({ queryKey: ["exercises"] }),
+    invalidateQueries: () => refetchExercises(),
   };
 };
 
@@ -59,10 +58,12 @@ export const useGetWorkouts = () => {
     data: workouts,
     isPending,
     error,
+    refetch,
   } = useQuery<Workout[]>({
     queryKey: ["workouts"],
     queryFn: workoutAPI.getWorkouts,
   });
+
   useEffect(() => {
     if (workouts) {
       setWorkouts(workouts);
@@ -71,15 +72,17 @@ export const useGetWorkouts = () => {
       setWorkouts(JSON.parse(storedWorkouts || ""));
     }
   }, [workouts, storedWorkouts]);
+
   return {
     workouts,
     isPending,
     error,
+    refetch,
   };
 };
 
 export const useCreateWorkout = () => {
-  const queryClient = useQueryClient();
+  const { refetch: refetchWorkouts } = useGetWorkouts();
   const { workouts, setWorkouts } = useWorkoutStore();
   const {
     mutateAsync: createWorkout, // 👈 use mutateAsync instead of mutate
@@ -97,8 +100,7 @@ export const useCreateWorkout = () => {
       workoutDays: string[];
     }) => workoutAPI.createWorkout({ name, description, workoutDays }),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["creation-workout"] });
-      queryClient.invalidateQueries({ queryKey: ["workouts"] });
+      refetchWorkouts();
       setWorkouts([...workouts, data]);
       storage.set("workouts", JSON.stringify([...workouts, data]));
     },
@@ -117,7 +119,7 @@ export const useCreateWorkout = () => {
 
 export const useUpdateWorkout = () => {
   const { workouts, setWorkouts } = useWorkoutStore();
-  const queryClient = useQueryClient();
+  const { refetch: refetchWorkouts } = useGetWorkouts();
   const {
     mutate: updateWorkout,
     isPending,
@@ -133,7 +135,7 @@ export const useUpdateWorkout = () => {
     onSuccess: (data) => {
       setWorkouts([...workouts, data]);
       storage.set("workouts", JSON.stringify([...workouts, data]));
-      queryClient.invalidateQueries({ queryKey: ["workouts"] });
+      refetchWorkouts();
     },
     onError: (error) => {
       console.error(error);
@@ -147,8 +149,8 @@ export const useUpdateWorkout = () => {
 };
 
 export const useDeleteWorkout = () => {
-  const queryClient = useQueryClient();
   const { workouts, setWorkouts } = useWorkoutStore();
+  const { refetch: refetchWorkouts } = useGetWorkouts();
   const {
     mutateAsync: deleteWorkout,
     isPending,
@@ -157,12 +159,11 @@ export const useDeleteWorkout = () => {
     mutationFn: (workoutId: string) => workoutAPI.deleteWorkout(workoutId),
     onSuccess: (data) => {
       setWorkouts(workouts.filter((workout) => workout._id !== data._id));
-      queryClient.invalidateQueries({ queryKey: ["creation-workout"] });
-      queryClient.invalidateQueries({ queryKey: ["workouts"] });
       storage.set(
         "workouts",
         JSON.stringify(workouts.filter((workout) => workout._id !== data._id))
       );
+      refetchWorkouts();
     },
     onError: (error) => {
       console.error(error);
@@ -174,6 +175,7 @@ export const useDeleteWorkout = () => {
 export const useToggleWorkoutActiveStatus = () => {
   const queryClient = useQueryClient();
   const { workouts, setWorkouts } = useWorkoutStore();
+  const { refetch: refetchWorkouts } = useGetWorkouts();
   const {
     mutateAsync: toggleWorkoutActiveStatus,
     isPending,
@@ -185,13 +187,13 @@ export const useToggleWorkoutActiveStatus = () => {
       setWorkouts(
         workouts.map((workout) => (workout._id === data._id ? data : workout))
       );
-      queryClient.invalidateQueries({ queryKey: ["workouts"] });
       storage.set(
         "workouts",
         JSON.stringify(
           workouts.map((workout) => (workout._id === data._id ? data : workout))
         )
       );
+      refetchWorkouts();
     },
     onError: (error) => {
       console.error(error);

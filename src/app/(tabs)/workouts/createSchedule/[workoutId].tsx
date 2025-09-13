@@ -41,6 +41,14 @@ const CreateSchedule = () => {
   const [selectedExercises, setSelectedExercises] = useState<Exercise[]>([]);
   const [showExercisesModal, setShowExercisesModal] = useState(false);
 
+  // Reset form fields function
+  const resetFields = useCallback(() => {
+    setScheduleName("");
+    setDescription("");
+    setSelectedDays([]);
+    setSelectedExercises([]);
+    setError("");
+  }, []);
   const {
     createSchedule,
     isPending: isCreating,
@@ -67,13 +75,6 @@ const CreateSchedule = () => {
     ? schedules?.find((s: Schedule) => s._id === scheduleId)
     : null;
 
-  const resetFields = useCallback(() => {
-    setScheduleName("");
-    setDescription("");
-    setSelectedDays([]);
-    setSelectedExercises([]);
-  }, []);
-
   // Populate form when editing
   useEffect(() => {
     if (isEditMode && scheduleToEdit) {
@@ -82,20 +83,20 @@ const CreateSchedule = () => {
       setSelectedDays(scheduleToEdit.days || []);
       setSelectedExercises(scheduleToEdit.exercises || []);
     } else if (isEditMode && !scheduleToEdit && !schedulesLoading) {
+      resetFields();
     } else {
       resetFields();
     }
-    setError(""); // Clear any previous errors
   }, [
     isEditMode,
     scheduleToEdit,
-    resetFields,
     scheduleId,
     workoutId,
     schedulesLoading,
     querySchedules,
     storeSchedules,
     schedules,
+    resetFields,
   ]);
 
   const handleBack = useCallback(() => {
@@ -154,7 +155,7 @@ const CreateSchedule = () => {
       }
 
       if (schedule._id) {
-        await resetFields();
+        resetFields();
         router.navigate(`/(tabs)/workouts/viewWorkoutSplit/${workoutId}`);
       }
     } catch (error: any) {
@@ -176,8 +177,8 @@ const CreateSchedule = () => {
     createScheduleError,
     updateScheduleError,
     isPending,
-    resetFields,
     router,
+    resetFields,
   ]);
 
   const dayOptions = [

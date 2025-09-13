@@ -6,9 +6,11 @@ import HomeTabIcon from "@/src/components/icons/HomeTabIcon";
 import WorkoutTabIcon from "@/src/components/icons/WorkoutTabIcon";
 import { Tabs } from "expo-router";
 import { useGetWorkouts } from "@/src/hooks/useWorkout";
+import { useGetSchedules } from "@/src/hooks/useSchedule";
 
 export default function RootLayout() {
   const { workouts } = useGetWorkouts();
+  const { schedules } = useGetSchedules();
   return (
     <Tabs
       screenOptions={{

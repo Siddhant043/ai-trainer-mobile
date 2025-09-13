@@ -10,5 +10,10 @@ interface Exercise {
   description: string;
   difficulty: string;
   category: string;
+  loggingType:
+    | "sets_reps"
+    | "time_distance"
+    | "sets_reps_weight"
+    | "duration_only";
 }
 export default Exercise;

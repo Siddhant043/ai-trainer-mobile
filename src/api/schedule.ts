@@ -3,6 +3,10 @@ import { Schedule } from "../types";
 import api, { WORKOUT_MS_URL } from "./config";
 
 export const scheduleAPI = {
+  getAllSchedules: async () => {
+    const response = await api.get(`${WORKOUT_MS_URL}/schedules`);
+    return response.data.schedules;
+  },
   getAllSchedulesByWorkoutId: async (workoutId: string) => {
     const response = await api.get(
       `${WORKOUT_MS_URL}/schedules/workout/${workoutId}`
