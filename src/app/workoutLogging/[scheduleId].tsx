@@ -1,4 +1,12 @@
-import { View, StatusBar, StyleSheet, ScrollView } from "react-native";
+import {
+  View,
+  StatusBar,
+  StyleSheet,
+  ScrollView,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import CustomText from "@/src/components/CustomText";
@@ -9,6 +17,7 @@ import SecondaryButton from "@/src/components/SecondaryButton";
 import { Ionicons } from "@expo/vector-icons";
 import ExerciseLogger from "@/src/components/ExerciseLogger";
 import { useScheduleRecordStore } from "@/src/store";
+import * as fs from "node:fs/promises";
 
 const WorkoutLogging = () => {
   const { scheduleId } = useLocalSearchParams<{ scheduleId: string }>();
@@ -18,20 +27,12 @@ const WorkoutLogging = () => {
   const { getOneSchedule } = useScheduleStore();
   const schedule = getOneSchedule(scheduleId) as Schedule;
   const [stopTimer, setStopTimer] = useState<boolean>(false);
-  const { initializeScheduleRecord } = useScheduleRecordStore();
+  const { getScheduleRecords } = useScheduleRecordStore();
   // redirect if schedule not found
   useEffect(() => {
     if (!schedule) {
       router.navigate("/(tabs)/workouts");
     }
-  }, [schedule]);
-
-  useEffect(() => {
-    initializeScheduleRecord({
-      scheduleId,
-      userId: user._id,
-      workoutId: schedule.workoutId,
-    });
   }, [schedule]);
 
   // run timer
@@ -72,8 +73,30 @@ const WorkoutLogging = () => {
     return `${paddedMins}:${paddedSecs}`;
   };
 
-  const handleFinish = () => {
+  const checkAllSetsCompleted = () => {
+    const scheduleRecords = getScheduleRecords();
+    let inCompleteSetCount = 0;
+    scheduleRecords.forEach((record: any) =>
+      record.exerciseRecords.forEach((exerciseRecord: any) => {
+        exerciseRecord.sets.forEach((set: any) => {
+          if (!set.completed) {
+            inCompleteSetCount++;
+          }
+        });
+      })
+    );
+    return inCompleteSetCount === 0;
+  };
+
+  const handleFinish = async () => {
     // stop timer
+    const allSetsCompleted = checkAllSetsCompleted();
+    if (!allSetsCompleted) {
+      Alert.alert("Please complete all sets");
+      return;
+    }
+    const scheduleRecords = getScheduleRecords();
+    // console.log(JSON.stringify(scheduleRecords, null, 2));
     setStopTimer(true);
   };
 
@@ -98,17 +121,22 @@ const WorkoutLogging = () => {
           </View>
         </View>
       </View>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={styles.exercisesContainer}>
-          {exercises.map((exercise) => (
-            <ExerciseLogger
-              key={exercise._id}
-              exercise={exercise}
-              scheduleId={scheduleId}
-            />
-          ))}
-        </View>
-      </ScrollView>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={styles.keyboardAvoidingView}
+      >
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <View style={styles.exercisesContainer}>
+            {exercises.map((exercise) => (
+              <ExerciseLogger
+                key={exercise._id}
+                exercise={exercise}
+                scheduleId={scheduleId}
+              />
+            ))}
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
@@ -161,6 +189,9 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     gap: 30,
     marginTop: 30,
+  },
+  keyboardAvoidingView: {
+    flex: 1,
   },
 });
 

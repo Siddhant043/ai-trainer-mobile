@@ -3,6 +3,7 @@ import { ScheduleRecord } from "../types";
 
 interface ScheduleRecordStore {
   scheduleRecords: Partial<ScheduleRecord>[];
+  getScheduleRecords: () => Partial<ScheduleRecord>[];
   setScheduleRecords: (scheduleRecords: Partial<ScheduleRecord>[]) => void;
   initializeScheduleRecord: ({
     scheduleId,
@@ -25,10 +26,10 @@ interface ScheduleRecordStore {
   ) => void;
 }
 
-const useScheduleRecordStore = create<ScheduleRecordStore>((set) => ({
+const useScheduleRecordStore = create<ScheduleRecordStore>((set, get) => ({
   scheduleRecords: [],
   setScheduleRecords: (scheduleRecords) => set({ scheduleRecords }),
-
+  getScheduleRecords: () => get().scheduleRecords,
   initializeScheduleRecord: ({
     scheduleId,
     userId,
@@ -38,12 +39,22 @@ const useScheduleRecordStore = create<ScheduleRecordStore>((set) => ({
     userId: string;
     workoutId: string;
   }) =>
-    set((state: any) => ({
-      scheduleRecords: [
-        ...state.scheduleRecords,
-        { scheduleId, userId, workoutId, exerciseRecords: [] },
-      ],
-    })),
+    set((state: any) => {
+      // Check if record already exists
+      const existingRecord = state.scheduleRecords.find(
+        (record: any) =>
+          record.scheduleId === scheduleId && record.userId === userId
+      );
+
+      if (existingRecord) {
+        return state; // Return current state without changes
+      }
+
+      const newRecord = { scheduleId, userId, workoutId, exerciseRecords: [] };
+      const updatedRecords = [...state.scheduleRecords, newRecord];
+
+      return { scheduleRecords: updatedRecords };
+    }),
 
   // ✅ Unified add + update
   upsertSetByScheduleAndExerciseId: (
@@ -51,36 +62,61 @@ const useScheduleRecordStore = create<ScheduleRecordStore>((set) => ({
     exerciseId: string,
     newSet: any
   ) =>
-    set((state: any) => ({
-      scheduleRecords: state.scheduleRecords.map((record: any) => {
+    set((state: any) => {
+      const updatedRecords = state.scheduleRecords.map((record: any) => {
         if (record.scheduleId !== scheduleId) return record;
 
-        return {
-          ...record,
-          exerciseRecords: record.exerciseRecords.map((exercise: any) => {
-            if (exercise.exerciseId !== exerciseId) return exercise;
+        // Find existing exercise record
+        const existingExerciseIndex = record.exerciseRecords.findIndex(
+          (exercise: any) => exercise.exerciseId === exerciseId
+        );
 
-            // check if set exists
-            const existingSetIndex = exercise.sets.findIndex(
-              (s: any) => s.setNumber === newSet.setNumber
-            );
+        if (existingExerciseIndex > -1) {
+          // Exercise record exists, update it
+          const exercise = record.exerciseRecords[existingExerciseIndex];
+          const existingSetIndex = exercise.sets.findIndex(
+            (s: any) => s.setNumber === newSet.setNumber
+          );
 
-            if (existingSetIndex > -1) {
-              // update existing set
-              const updatedSets = [...exercise.sets];
-              updatedSets[existingSetIndex] = {
-                ...updatedSets[existingSetIndex],
-                ...newSet,
-              };
-              return { ...exercise, sets: updatedSets };
-            } else {
-              // add new set
-              return { ...exercise, sets: [...exercise.sets, newSet] };
-            }
-          }),
-        };
-      }),
-    })),
+          let updatedSets;
+          if (existingSetIndex > -1) {
+            // Update existing set
+            updatedSets = [...exercise.sets];
+            updatedSets[existingSetIndex] = {
+              ...updatedSets[existingSetIndex],
+              ...newSet,
+            };
+          } else {
+            // Add new set
+            updatedSets = [...exercise.sets, newSet];
+          }
+
+          const updatedExerciseRecords = [...record.exerciseRecords];
+          updatedExerciseRecords[existingExerciseIndex] = {
+            ...exercise,
+            sets: updatedSets,
+          };
+
+          return {
+            ...record,
+            exerciseRecords: updatedExerciseRecords,
+          };
+        } else {
+          // Exercise record doesn't exist, create it
+          const newExerciseRecord = {
+            exerciseId,
+            sets: [newSet],
+          };
+
+          return {
+            ...record,
+            exerciseRecords: [...record.exerciseRecords, newExerciseRecord],
+          };
+        }
+      });
+
+      return { scheduleRecords: updatedRecords };
+    }),
 
   removeSetByScheduleAndExerciseId: (
     scheduleId: string,

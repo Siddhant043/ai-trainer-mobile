@@ -1,16 +1,25 @@
 import {
   View,
-  Text,
   StyleSheet,
   TextInput,
   TouchableOpacity,
+  Alert,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import CustomText from "./CustomText";
 import { Feather } from "@expo/vector-icons";
 import useUserStore from "../store/userStore";
 import SecondaryButton from "./SecondaryButton";
 import { useWorkoutStore } from "../store";
+import useScheduleRecordStore from "../store/scheduleRecordStore";
+
+interface SetData {
+  setNumber: number;
+  reps: number;
+  weight: number;
+  previous: string;
+  completed: boolean;
+}
 
 const SetsRepsWeightLoggingForm = ({
   exerciseId,
@@ -24,6 +33,12 @@ const SetsRepsWeightLoggingForm = ({
   const workoutId = getActiveWorkout()?._id || "";
   const userId = user._id;
 
+  const {
+    scheduleRecords,
+    upsertSetByScheduleAndExerciseId,
+    initializeScheduleRecord,
+  } = useScheduleRecordStore();
+
   const getPreviousSetData = (exerciseId: string, scheduleId: string) => {
     // TODO: Get previous set data from database
     return "10kgx12";
@@ -31,7 +46,7 @@ const SetsRepsWeightLoggingForm = ({
 
   const previousSetData = getPreviousSetData(exerciseId, scheduleId);
 
-  const [sets, setSets] = useState([
+  const [sets, setSets] = useState<SetData[]>([
     {
       setNumber: 1,
       reps: 0,
@@ -41,17 +56,109 @@ const SetsRepsWeightLoggingForm = ({
     },
   ]);
 
-  const emptySet = {
-    setNumber: sets.length + 1,
-    reps: 0,
-    weight: 0,
-    previous: previousSetData,
-    completed: false,
-  };
+  // Track if initialization has been attempted to prevent duplicates
+  const initializationAttempted = useRef(false);
 
-  const handleAddSet = () => {
-    setSets([...sets, emptySet]);
-  };
+  // Reset initialization flag when scheduleId changes
+  useEffect(() => {
+    initializationAttempted.current = false;
+  }, [scheduleId]);
+
+  // Initialize schedule record if it doesn't exist
+  useEffect(() => {
+    if (scheduleId && userId && workoutId && !initializationAttempted.current) {
+      const existingRecord = scheduleRecords.find(
+        (record) => record.scheduleId === scheduleId && record.userId === userId
+      );
+
+      if (!existingRecord) {
+        initializationAttempted.current = true;
+        initializeScheduleRecord({ scheduleId, userId, workoutId });
+      } else {
+        initializationAttempted.current = true;
+      }
+    }
+  }, [scheduleId, userId, workoutId, initializeScheduleRecord]);
+
+  // Load existing sets from store
+  useEffect(() => {
+    const scheduleRecord = scheduleRecords.find(
+      (record) => record.scheduleId === scheduleId && record.userId === userId
+    );
+
+    if (scheduleRecord?.exerciseRecords) {
+      const exerciseRecord = scheduleRecord.exerciseRecords.find(
+        (record) => record.exerciseId === exerciseId
+      );
+
+      if (exerciseRecord?.sets && exerciseRecord.sets.length > 0) {
+        const loadedSets = exerciseRecord.sets.map((set: any) => ({
+          setNumber: set.setNumber,
+          reps: set.reps || 0,
+          weight: set.weight || 0,
+          previous: previousSetData,
+          completed: set.completed || false, // Use the actual completed field from store
+        }));
+        setSets(loadedSets);
+      }
+    }
+  }, [scheduleRecords, scheduleId, userId, exerciseId, previousSetData]);
+
+  const handleAddSet = useCallback(() => {
+    const newSet: SetData = {
+      setNumber: sets.length + 1,
+      reps: 0,
+      weight: 0,
+      previous: previousSetData,
+      completed: false,
+    };
+    setSets([...sets, newSet]);
+  }, [sets, previousSetData]);
+
+  const handleSetUpdate = useCallback(
+    (setNumber: number, updates: Partial<SetData>) => {
+      const updatedSets = sets.map((set) =>
+        set.setNumber === setNumber ? { ...set, ...updates } : set
+      );
+      setSets(updatedSets);
+
+      // Update in store
+      const updatedSet = updatedSets.find((set) => set.setNumber === setNumber);
+      if (updatedSet) {
+        upsertSetByScheduleAndExerciseId(scheduleId, exerciseId, {
+          setNumber: updatedSet.setNumber,
+          reps: updatedSet.reps,
+          weight: updatedSet.weight,
+          completed: updatedSet.completed,
+        });
+      }
+    },
+    [sets, scheduleId, exerciseId, upsertSetByScheduleAndExerciseId]
+  );
+
+  const handleSetComplete = useCallback(
+    (setNumber: number) => {
+      const set = sets.find((s) => s.setNumber === setNumber);
+      if (!set) return;
+
+      if (set.completed) {
+        // Mark as incomplete
+        handleSetUpdate(setNumber, { completed: false });
+      } else {
+        // Mark as complete - validate first
+        if (set.reps <= 0 || set.weight <= 0) {
+          Alert.alert(
+            "Invalid Input",
+            "Please enter valid reps and weight before completing the set."
+          );
+          return;
+        }
+
+        handleSetUpdate(setNumber, { completed: true });
+      }
+    },
+    [sets, handleSetUpdate]
+  );
 
   return (
     <View style={styles.container}>
@@ -63,7 +170,12 @@ const SetsRepsWeightLoggingForm = ({
         <Feather name="check" size={24} color="#707070" />
       </View>
       {sets.map((set) => (
-        <SetForm key={set.setNumber} setData={set} />
+        <SetForm
+          key={set.setNumber}
+          setData={set}
+          onUpdate={handleSetUpdate}
+          onComplete={handleSetComplete}
+        />
       ))}
       <View style={styles.addSetButton}>
         <SecondaryButton size="medium" onPress={handleAddSet}>
@@ -74,23 +186,45 @@ const SetsRepsWeightLoggingForm = ({
   );
 };
 
-const SetForm = ({ setData }: { setData: any }) => {
+interface SetFormProps {
+  setData: SetData;
+  onUpdate: (setNumber: number, updates: Partial<SetData>) => void;
+  onComplete: (setNumber: number) => void;
+}
+
+const SetForm = ({ setData, onUpdate, onComplete }: SetFormProps) => {
   const { reps, weight, completed, setNumber, previous } = setData;
-  const [repsValue, setRepsValue] = useState(reps);
-  const [weightValue, setWeightValue] = useState(weight);
-  const [completedValue, setCompletedValue] = useState(completed);
+  const [repsValue, setRepsValue] = useState(reps.toString());
+  const [weightValue, setWeightValue] = useState(weight.toString());
+
+  // Update local state when props change
+  useEffect(() => {
+    setRepsValue(reps.toString());
+    setWeightValue(weight.toString());
+  }, [reps, weight]);
+
+  const handleRepsChange = (text: string) => {
+    const numericValue = text.replace(/[^0-9]/g, "");
+    setRepsValue(numericValue);
+    const repsNum = parseInt(numericValue) || 0;
+    onUpdate(setNumber, { reps: repsNum });
+  };
+
+  const handleWeightChange = (text: string) => {
+    const numericValue = text.replace(/[^0-9.]/g, "");
+    setWeightValue(numericValue);
+    const weightNum = parseFloat(numericValue) || 0;
+    onUpdate(setNumber, { weight: weightNum });
+  };
 
   const handleCompleteToggle = () => {
-    if (repsValue === 0 || weightValue === 0) {
-      return;
-    }
-    setCompletedValue(!completedValue);
+    onComplete(setNumber);
   };
 
   return (
-    <View style={completedValue ? styles.completedSetForm : styles.setForm}>
+    <View style={completed ? styles.completedSetForm : styles.setForm}>
       <TextInput
-        style={[styles.setInput, completedValue && { backgroundColor: "none" }]}
+        style={[styles.setInput, completed && { backgroundColor: "none" }]}
         editable={false}
         value={setNumber.toString()}
       />
@@ -100,32 +234,30 @@ const SetForm = ({ setData }: { setData: any }) => {
         value={previous}
       />
       <TextInput
-        style={[
-          styles.weightInput,
-          completedValue && { backgroundColor: "none" },
-        ]}
+        style={[styles.weightInput, completed && { backgroundColor: "none" }]}
         editable={!completed}
-        value={weightValue.toString()}
-        onChangeText={(text) => setWeightValue(text)}
+        value={weightValue}
+        onChangeText={handleWeightChange}
+        keyboardType="numeric"
+        placeholder="0"
       />
       <TextInput
-        style={[
-          styles.repsInput,
-          completedValue && { backgroundColor: "none" },
-        ]}
+        style={[styles.repsInput, completed && { backgroundColor: "none" }]}
         editable={!completed}
-        value={repsValue.toString()}
-        onChangeText={(text) => setRepsValue(text)}
+        value={repsValue}
+        onChangeText={handleRepsChange}
+        keyboardType="numeric"
+        placeholder="0"
       />
-      {!completedValue ? (
+      {!completed ? (
         <TouchableOpacity
-          activeOpacity={1}
+          activeOpacity={0.7}
           style={styles.incompleteInput}
           onPress={handleCompleteToggle}
         />
       ) : (
         <TouchableOpacity
-          activeOpacity={1}
+          activeOpacity={0.7}
           onPress={handleCompleteToggle}
           style={styles.completedInput}
         >

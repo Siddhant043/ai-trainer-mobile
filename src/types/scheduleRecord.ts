@@ -12,6 +12,7 @@ interface ScheduleRecord {
       weight?: number;
       duration?: number;
       distance?: number;
+      completed?: boolean;
     }[];
   }[];
   createdAt?: string;
