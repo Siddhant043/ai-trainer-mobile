@@ -15,7 +15,7 @@ export const useGetExercises = (
   equipment = "",
   category = ""
 ) => {
-  const { refetch: refetchExercises } = useGetExercises();
+  const queryClient = useQueryClient();
 
   const query = useQuery<ExercisesResponse>({
     queryKey: [
@@ -47,7 +47,8 @@ export const useGetExercises = (
 
   return {
     ...query,
-    invalidateQueries: () => refetchExercises(),
+    invalidateQueries: () =>
+      queryClient.invalidateQueries({ queryKey: ["exercises"] }),
   };
 };
 

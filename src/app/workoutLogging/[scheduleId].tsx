@@ -90,13 +90,13 @@ const WorkoutLogging = () => {
 
   const handleFinish = async () => {
     // stop timer
-    const allSetsCompleted = checkAllSetsCompleted();
-    if (!allSetsCompleted) {
-      Alert.alert("Please complete all sets");
-      return;
-    }
+    // const allSetsCompleted = checkAllSetsCompleted();
+    // if (!allSetsCompleted) {
+    //   Alert.alert("Please complete all sets");
+    //   return;
+    // }
     const scheduleRecords = getScheduleRecords();
-    // console.log(JSON.stringify(scheduleRecords, null, 2));
+    console.log(JSON.stringify(scheduleRecords, null, 2));
     setStopTimer(true);
   };
 
