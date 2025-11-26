@@ -38,6 +38,17 @@ interface User {
   timezone?: string;
   language?: string;
   currency?: string;
+  dailyNutrition: {
+    _id: string;
+    totalRequiredCalories: number;
+    totalRequiredProtein: number;
+    totalRequiredCarbohydrates: number;
+    totalRequiredFat: number;
+    totalConsumedCalories: number;
+    totalConsumedProtein: number;
+    totalConsumedCarbohydrates: number;
+    totalConsumedFat: number;
+  };
   equipments?: string[];
 }
 export default User;

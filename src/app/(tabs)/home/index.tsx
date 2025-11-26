@@ -18,9 +18,13 @@ import EmptyWorkoutPlan from "@/src/components/EmptyWorkoutPlan";
 import DrawerModal from "@/src/components/DrawerModal";
 import { WEEKDAYS } from "@/src/constants";
 import ScheduleCard from "@/src/components/ScheduleCard";
+import { useDailyNutrition } from "@/src/hooks/useUser";
 
 const Home = () => {
   const { user } = useUserStore();
+
+  // This hook will automatically refetch dailyNutrition every 10 seconds if it's missing
+  useDailyNutrition();
 
   const { getActiveWorkout } = useWorkoutStore();
   const router = useRouter();

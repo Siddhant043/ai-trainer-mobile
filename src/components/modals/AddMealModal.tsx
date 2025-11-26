@@ -13,6 +13,8 @@ import { FontAwesome6, Ionicons } from "@expo/vector-icons";
 import Button from "../Button";
 import CustomText from "../CustomText";
 import { useRouter } from "expo-router";
+import { useMeals } from "@/src/hooks/useMeals";
+import useUserStore from "@/src/store/userStore";
 
 const AddMealModal = ({
   isOpen,
@@ -22,6 +24,9 @@ const AddMealModal = ({
   setIsOpen: (isOpen: boolean) => void;
 }) => {
   const [mealDetails, setMealDetails] = useState<string>("");
+  const { createMeal } = useMeals();
+  const { user } = useUserStore();
+  const dailyNutritionId = user.dailyNutrition._id || "";
   const router = useRouter();
 
   const handleAddImage = () => {
@@ -39,10 +44,14 @@ const AddMealModal = ({
       setIsOpen(false);
       return;
     }
-    // TODO: Implement add meal functionality
-    console.log("Add meal pressed with details:", mealDetails);
+    console.log("dailyNutritionId", { dailyNutritionId, mealDetails });
+    createMeal({
+      dailyNutritionId,
+      mealDetails,
+    });
     setIsOpen(false);
-    router.navigate("/(tabs)/chats");
+    router.navigate("/(tabs)/meals");
+    setMealDetails("");
   };
 
   return (

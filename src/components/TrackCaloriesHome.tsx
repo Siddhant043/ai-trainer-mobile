@@ -2,25 +2,43 @@ import { StyleSheet, View, Image } from "react-native";
 import React from "react";
 import CustomText from "./CustomText";
 import CalorieBurnIcon from "./CalorieBurnIcon";
-import CustomTextInput from "./CustomTextInput";
+import { useDailyNutrition } from "../hooks/useUser";
 
 const TrackCaloriesHome = () => {
+  const { dailyNutrition } = useDailyNutrition();
+  const totalRequiredCalories = dailyNutrition?.totalRequiredCalories;
+  const totalConsumedCalories = dailyNutrition?.totalConsumedCalories;
   const macrosMap = [
     {
       label: "Protein left",
-      remainging: "80g",
+      remainging:
+        (
+          dailyNutrition?.totalRequiredProtein -
+          dailyNutrition?.totalConsumedProtein
+        )
+          .toFixed(0)
+          .toString() + "g",
       icon: require("@/assets/macros/protein.png"),
       backgroundColor: "#F1D4BA",
     },
     {
       label: "Carbs left",
-      remainging: "200g",
+      remainging:
+        (
+          dailyNutrition?.totalRequiredCarbohydrates -
+          dailyNutrition?.totalConsumedCarbohydrates
+        )
+          .toFixed(0)
+          .toString() + "g",
       icon: require("@/assets/macros/carbs.png"),
       backgroundColor: "#D8EBED",
     },
     {
       label: "Fats left",
-      remainging: "100g",
+      remainging:
+        (dailyNutrition?.totalRequiredFat - dailyNutrition?.totalConsumedFat)
+          .toFixed(0)
+          .toString() + "g",
       icon: require("@/assets/macros/fat.png"),
       backgroundColor: "#B8E5BE",
     },
@@ -30,14 +48,18 @@ const TrackCaloriesHome = () => {
       <View style={styles.topSection}>
         <View style={styles.topSectionLeft}>
           <View style={styles.topSectionLeftIconContainer}>
-            <CalorieBurnIcon progress={0.7} />
+            <CalorieBurnIcon
+              progress={
+                (totalConsumedCalories ?? 0) / (totalRequiredCalories ?? 0)
+              }
+            />
             <View style={styles.calorieBurnTextContainer}>
               <View style={styles.calorieBurnTextValueContainer}>
                 <CustomText style={styles.calorieBurnTextValueNominator}>
-                  442
+                  {totalConsumedCalories}
                 </CustomText>
                 <CustomText style={styles.calorieBurnTextValueDenominator}>
-                  /2200 Kcal
+                  /{totalRequiredCalories} Kcal
                 </CustomText>
               </View>
               <CustomText style={styles.calorieBurnText}>

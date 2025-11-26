@@ -73,7 +73,6 @@ export const useCheckUserLoggedIn = () => {
 
       // Step 2: Check if user exists in MMKV storage
       const currentUser = storage.getString("user");
-      console.log("currentUser", currentUser);
       if (currentUser) {
         try {
           const parsedUser = JSON.parse(currentUser) as User;

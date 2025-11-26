@@ -32,6 +32,7 @@ const StepOne = ({ setNext }: { setNext: (step: number) => void }) => {
       ...user,
       name: fullName,
       phoneNumber: phoneNumber,
+      dob: date.toString(),
       physicalDetials: {
         ...user?.physicalDetials,
         gender: gender,

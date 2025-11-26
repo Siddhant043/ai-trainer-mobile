@@ -12,9 +12,11 @@ const Meals = () => {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const handleCheckHistory = () => {
-    router.navigate("/(tabs)/home");
+    router.navigate("/(tabs)/meals/mealHistory");
   };
-
+  const handleAddMeal = () => {
+    setIsOpen(true);
+  };
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -25,7 +27,7 @@ const Meals = () => {
           </Pressable>
         </View>
         <CurrentMacrosCard />
-        <Button onPress={() => setIsOpen(true)}>Add Meal</Button>
+        <Button onPress={handleAddMeal}>Add Meal</Button>
         <AddMealModal isOpen={isOpen} setIsOpen={setIsOpen} />
         <TodayMeals />
       </ScrollView>

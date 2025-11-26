@@ -112,6 +112,12 @@ export default function RootLayout() {
           href: null,
         }}
       />
+      <Tabs.Screen
+        name="meals/mealHistory"
+        options={{
+          href: null,
+        }}
+      />
     </Tabs>
   );
 }

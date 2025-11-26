@@ -2,46 +2,80 @@ import { StyleSheet, View, Image } from "react-native";
 import React from "react";
 import CustomText from "./CustomText";
 import CalorieBurnIcon from "./CalorieBurnIcon";
-import CustomTextInput from "./CustomTextInput";
 import ProgressLine from "./ProgressLine";
+import { useDailyNutrition } from "../hooks/useUser";
 
 const CurrentMacrosCard = () => {
+  // This hook will automatically refetch every 10 seconds if dailyNutrition is missing
+  const { dailyNutrition, isDailyNutritionMissing, isLoading } =
+    useDailyNutrition();
+  console.log("dailyNutrition", dailyNutrition);
+
+  const totalRequiredCalories = dailyNutrition?.totalRequiredCalories;
+  const totalConsumedCalories = dailyNutrition?.totalConsumedCalories;
+  const totalRequiredProtein = dailyNutrition?.totalRequiredProtein;
+  const totalConsumedProtein = dailyNutrition?.totalConsumedProtein;
+  const totalRequiredCarbohydrates = dailyNutrition?.totalRequiredCarbohydrates;
+  const totalConsumedCarbohydrates = dailyNutrition?.totalConsumedCarbohydrates;
+  const totalRequiredFat = dailyNutrition?.totalRequiredFat;
+  const totalConsumedFat = dailyNutrition?.totalConsumedFat;
   const macrosMap = [
     {
       label: "Protein",
-      nominator: 28,
-      denominator: 130,
+      nominator: totalConsumedProtein,
+      denominator: totalRequiredProtein,
       icon: require("@/assets/macros/protein.png"),
       backgroundColor: "#F1D4BA",
     },
     {
       label: "Carbs",
-      nominator: 200,
-      denominator: 300,
+      nominator: totalConsumedCarbohydrates,
+      denominator: totalRequiredCarbohydrates,
       icon: require("@/assets/macros/carbs.png"),
       backgroundColor: "#D8EBED",
     },
     {
       label: "Fats",
-      nominator: 8,
-      denominator: 10,
+      nominator: totalConsumedFat,
+      denominator: totalRequiredFat,
       icon: require("@/assets/macros/fat.png"),
       backgroundColor: "#B8E5BE",
     },
   ];
+
+  const energyPercentage =
+    ((totalConsumedCalories ?? 0) / (totalRequiredCalories ?? 0)) * 100;
+
+  // Show loading state if data is being fetched for the first time
+  if (isLoading && isDailyNutritionMissing) {
+    return (
+      <View style={styles.container}>
+        <View style={styles.loadingContainer}>
+          <CustomText style={styles.loadingText}>
+            Loading nutrition data...
+          </CustomText>
+        </View>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.topSection}>
         <View style={styles.topSectionLeft}>
           <View style={styles.topSectionLeftIconContainer}>
-            <CalorieBurnIcon progress={0.7} />
+            <CalorieBurnIcon
+              progress={
+                (totalConsumedCalories ?? 0) / (totalRequiredCalories ?? 0)
+              }
+            />
             <View style={styles.calorieBurnTextContainer}>
               <View style={styles.calorieBurnTextValueContainer}>
                 <CustomText style={styles.calorieBurnTextValueNominator}>
-                  442
+                  {totalConsumedCalories}
                 </CustomText>
                 <CustomText style={styles.calorieBurnTextValueDenominator}>
-                  /2200
+                  /{totalRequiredCalories}
                 </CustomText>
               </View>
               <CustomText style={styles.calorieBurnText}>
@@ -55,7 +89,7 @@ const CurrentMacrosCard = () => {
             Energy Level
           </CustomText>
           <CustomText style={styles.topSectionRightTextValue}>
-            80/100
+            {energyPercentage.toFixed(0)}/100
           </CustomText>
         </View>
       </View>
@@ -77,7 +111,9 @@ const CurrentMacrosCard = () => {
               </View>
               <CustomText style={styles.macroLabel}>{macro.label}</CustomText>
             </View>
-            <ProgressLine progress={macro.nominator / macro.denominator} />
+            <ProgressLine
+              progress={(macro.nominator ?? 0) / (macro.denominator ?? 0)}
+            />
             <View style={styles.macroTextContainer}>
               <View style={styles.calorieBurnTextValueContainer}>
                 <CustomText style={styles.macroTextValueNominator}>
@@ -204,6 +240,17 @@ const styles = StyleSheet.create({
   macroIcon: {
     width: 28,
     height: 28,
+  },
+  loadingContainer: {
+    padding: 20,
+    alignItems: "center",
+    justifyContent: "center",
+    minHeight: 200,
+  },
+  loadingText: {
+    fontSize: 14,
+    color: "#707070",
+    fontFamily: "OutfitRegular",
   },
   macroTextContainer: {
     flex: 1,

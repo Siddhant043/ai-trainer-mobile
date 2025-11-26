@@ -3,37 +3,18 @@ import React from "react";
 import CustomText from "./CustomText";
 import { FlashList } from "@shopify/flash-list";
 import MealItem from "./MealItem";
+import { Meal } from "../types";
+import useMealsStore from "../store/mealsStore";
 
 const TodayMeals = () => {
-  const mealData = [
-    {
-      id: 1,
-      name: "Chhole Chawal",
-      calories: 320,
-      agentMessage:
-        "This meal was carb heavy, please consume a balanced meal next time",
-      protein: 10,
-      carbs: 100,
-      fat: 30,
-    },
-    {
-      id: 2,
-      name: "Roasted Chicken",
-      calories: 200,
-      agentMessage:
-        "Protein quantity is good but please consume a balanced meal next time",
-      protein: 40,
-      carbs: 80,
-      fat: 20,
-    },
-  ];
+  const { todaysMeals } = useMealsStore();
   return (
     <View style={styles.container}>
       <CustomText style={styles.title}>Meals Consumed Today</CustomText>
       <FlashList
-        data={mealData}
+        data={todaysMeals}
         estimatedItemSize={100}
-        renderItem={({ item }) => <MealItem meal={item} />}
+        renderItem={({ item }) => <MealItem meal={item as Meal} />}
       />
     </View>
   );

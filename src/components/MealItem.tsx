@@ -1,43 +1,75 @@
 import {
   View,
-  Text,
   StyleSheet,
   Image,
   ImageSourcePropType,
+  ActivityIndicator,
 } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import CustomText from "./CustomText";
 import { MaterialIcons } from "@expo/vector-icons";
+import { Meal } from "../types";
+import { useMeals } from "../hooks/useMeals";
+import { useDailyNutrition } from "../hooks/useUser";
 
-const MealItem = ({ meal }: { meal: any }) => {
+const MealItem = ({ meal }: { meal: Meal }) => {
+  const { deleteMeal } = useMeals();
+  const [underDevelopment, setUnderDevelopment] = useState(false);
+  const { refetchDailyNutrition } = useDailyNutrition();
+
+  useEffect(() => {
+    if (!meal.macros) {
+      setUnderDevelopment(true);
+    } else {
+      refetchDailyNutrition();
+      setUnderDevelopment(false);
+    }
+  }, [meal]);
+
+  if (underDevelopment) {
+    return (
+      <View style={styles.container}>
+        <CustomText style={styles.title}>Caluculating Macros</CustomText>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <View style={styles.headerLeft}>
-          <CustomText style={styles.title}>{meal.name}: </CustomText>
-          <CustomText style={styles.calories}>{meal.calories} Kcal</CustomText>
+          <CustomText style={styles.title}>{meal.mealTopic}: </CustomText>
+          <CustomText style={styles.calories}>
+            {meal?.macros?.calories} Kcal
+          </CustomText>
         </View>
         <View style={styles.headerRight}>
-          <MaterialIcons name="delete" size={16} color="#A8A8A8" />
+          <MaterialIcons
+            name="delete"
+            size={16}
+            color="#A8A8A8"
+            onPress={() => deleteMeal(meal._id)}
+          />
         </View>
       </View>
-      <CustomText style={styles.agentMessage}>{meal.agentMessage}</CustomText>
+      <CustomText style={styles.agentMessage}>{meal.mealTopic}</CustomText>
       <View style={styles.macroContainer}>
         <MacroItem
           macroName="Protein"
-          macroValue={meal.protein}
+          macroValue={meal?.macros?.protein}
           backgroundColor="#F1D4BA"
           icon={require("@/assets/macros/protein.png")}
         />
         <MacroItem
           macroName="Carbs"
-          macroValue={meal.carbs}
+          macroValue={meal?.macros?.carbohydrates}
           backgroundColor="#D8EBED"
           icon={require("@/assets/macros/carbs.png")}
         />
         <MacroItem
           macroName="Fat"
-          macroValue={meal.fat}
+          macroValue={meal?.macros?.fat}
           backgroundColor="#B8E5BE"
           icon={require("@/assets/macros/fat.png")}
         />
@@ -96,6 +128,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 16,
     color: "#707070",
+    maxWidth: "80%",
   },
   calories: {
     fontSize: 16,
